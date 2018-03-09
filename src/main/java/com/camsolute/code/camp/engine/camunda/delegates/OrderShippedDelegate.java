@@ -30,6 +30,7 @@ import org.camunda.bpm.engine.impl.persistence.entity.ExecutionEntity;
 
 import com.camsolute.code.camp.lib.models.order.OrderRest;
 import com.camsolute.code.camp.lib.models.order.Order;
+import com.camsolute.code.camp.lib.models.order.Order.UpdateAttribute;
 import com.camsolute.code.camp.lib.models.process.Process;
 
 
@@ -69,39 +70,39 @@ public class OrderShippedDelegate implements JavaDelegate {
 			_f = "[_execute]";
 			msg = "====[ handling order update (shipped) event: updating status to '"+targetStatus+"']====";LOG.traceEntry(String.format(fmt,_f,msg));
 		}
-		String orderNumber = (String) execution.getVariable("orderNumber");
-		String orderId = (String) execution.getVariable("orderId");
-		String orderStatus = (String) execution.getVariable("orderStatus");
+		String objectBusinessId = (String) execution.getVariable("objectBusinessId");
+		String objectId = (String) execution.getVariable("objectId");
+		String objectStatus = (String) execution.getVariable("objectStatus");
 		String businessKey = ((ExecutionEntity) execution).getBusinessKey();
 		String activityId = ((ExecutionEntity) execution).getActivityId();
 		String processInstanceId = ((ExecutionEntity) execution).getProcessInstanceId();
 		
-		if(log && _DEBUG){msg = "----[orderNumber '"+orderNumber+"']----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && _DEBUG){msg = "----[orderId '"+orderId+"']----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && _DEBUG){msg = "----[orderStatus '"+orderStatus+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(log && _DEBUG){msg = "----[objectBusinessId '"+objectBusinessId+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(log && _DEBUG){msg = "----[objectId '"+objectId+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(log && _DEBUG){msg = "----[objectStatus '"+objectStatus+"']----";LOG.info(String.format(fmt, _f,msg));}
 		if(log && _DEBUG){msg = "----[businessKey '"+businessKey+"']----";LOG.info(String.format(fmt, _f,msg));}
 		if(log && _DEBUG){msg = "----[activityId '"+activityId+"']----";LOG.info(String.format(fmt, _f,msg));}
 		if(log && _DEBUG){msg = "----[processInstanceId '"+processInstanceId+"']----";LOG.info(String.format(fmt, _f,msg));}
 		if(log && _DEBUG){msg = "----[targetStatus '"+targetStatus+"']----";LOG.info(String.format(fmt, _f,msg));}
 		
-//		Order order = OrderRestDao.instance()._load(orderNumber, log);
+//		Order order = OrderRestDao.instance()._load(objectBusinessId, log);
 		
-		Order o = OrderRest.instance().update("status", orderNumber, targetStatus, log);
+		Order o = OrderRest.instance().updateAttribute(UpdateAttribute.STATUS, objectBusinessId, targetStatus, log);
 		//FIXME: TODO: set variable in all relevant order process instances via o.observerProcesses and correlating the appropriate processes
 /* something like this but instanceId must be executionId
 		for(OrderProcess op:o.observerProcesses().toList().value()) {
 			if(!op.ended()&&!op.suspended()) {
-				execution.getProcessEngineServices().getRuntimeService().setVariable(op.instanceId(), "orderId", String.valueOf(o.id()));
+				execution.getProcessEngineServices().getRuntimeService().setVariable(op.instanceId(), "objectId", String.valueOf(o.id()));
 			}
 		}
 */
-		//		execution.setVariable("orderId", String.valueOf(o.id())); 
+		//		execution.setVariable("objectId", String.valueOf(o.id())); 
 //		
-//			if(log && _DEBUG){msg = "----[updated orderId('"+o.id()+"')]----";LOG.info(String.format(fmt, _f,msg));}
+//			if(log && _DEBUG){msg = "----[updated objectId('"+o.id()+"')]----";LOG.info(String.format(fmt, _f,msg));}
 //		
-//		execution.setVariable("orderStatus", o.status().name());
+//		execution.setVariable("objectStatus", o.status().name());
 //		
-//			if(log && _DEBUG){msg = "----[updated orderStatus('"+o.status().name()+"')]----";LOG.info(String.format(fmt, _f,msg));}
+//			if(log && _DEBUG){msg = "----[updated objectStatus('"+o.status().name()+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		
 		if(log && _DEBUG) {
 			String time = "[ExecutionTime:"+(System.currentTimeMillis()-startTime)+")]====";

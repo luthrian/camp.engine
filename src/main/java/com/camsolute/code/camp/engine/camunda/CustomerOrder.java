@@ -22,7 +22,7 @@ package com.camsolute.code.camp.engine.camunda;
 import org.camunda.bpm.application.ProcessApplication;
 import org.camunda.bpm.application.impl.ServletProcessApplication;
 
-@ProcessApplication("camp.camunda")
+@ProcessApplication("camp.engine")
 public class CustomerOrder  extends ServletProcessApplication {
 
 	public CustomerOrder(){

@@ -4,7 +4,7 @@
   <artifactId>camp.engine</artifactId>
   <version>0.1</version>
   <packaging>war</packaging>
-  <name>Camp PMF Camunda example</name>
+  <name>CAMP Process Management Framework - Simple Order Process with Camunda </name>
    <organization>
   	<name>Camsolute.com</name>
   </organization>
@@ -13,31 +13,18 @@
   	<!-- CAMSOLUTE START -->
   	<camp.version>0.6.5</camp.version>
 	<!-- JSON TRANSFORMATION START -->
-    <jsoup.version>1.10.3</jsoup.version>
+    	<jsoup.version>1.10.3</jsoup.version>
 	<!-- JAVA START -->
 	<jdkName>JavaSE-1.8</jdkName>
 	<jdk.version>1.8</jdk.version>
-	<!-- HIBERNATION START -->
-	<junit.version>4.9</junit.version>
-	<mockobjects.version>0.09</mockobjects.version>
-
 	<!-- DATABASE START -->
 	<mariadb.version>1.1.7</mariadb.version>
 	<commons.dbcp.version>2.1.1</commons.dbcp.version>
-	
-	<!-- PERSISTENCE START -->
-	<batoo.version>2.0.1.2</batoo.version>
-	<hibernate.version>4.0.1.Final</hibernate.version>
-	<!-- PERSISTENCE END -->
-	
 	<!-- LOGGING START -->
 	<slf4j.version>1.7.25</slf4j.version>
 	<log4j2.version>2.9.0</log4j2.version>
 	<!-- LOGGING END -->
 	
-	<!-- SPRING START -->
-	<spring.version>3.1.2.RELEASE</spring.version>
-
 	<sd.commons.version>1.4.0.RELEASE</sd.commons.version>
 	<sd.jpa.version>1.2.0.RELEASE</sd.jpa.version>
 	<sd.rest.version>1.0.0.RELEASE</sd.rest.version>
@@ -58,17 +45,12 @@
 	<persistence.version>2.0</persistence.version>
 	<joda.time.version>2.3</joda.time.version>
 	<jersey.version>2.26</jersey.version>
-	<eclipse.jetty.version>9.4.7.RC0</eclipse.jetty.version>
-	<maven.surefire>3.5.0</maven.surefire>
-    <jsoup.version>1.10.3</jsoup.version>
-	<fasterxml.jaxrs.version>2.2.1</fasterxml.jaxrs.version>
     <http.components.client>4.5.3</http.components.client>
     <http.components.core>4.4.6</http.components.core>
     <http.components.mime>4.5.3</http.components.mime>
     <apache.commons.pool2.version>2.4.2</apache.commons.pool2.version>
     <commons.logging>1.2</commons.logging>
     <commons.lang>3.5</commons.lang>
-    <commons.io>2.5</commons.io>
   </properties>
   <dependencies>
 	<!-- ================== -->
@@ -109,12 +91,6 @@
 		<artifactId>joda-time</artifactId>
 		<version>${joda.time.version}</version>
 	</dependency>
-<!-- ========JACKSON JODA TIME========== -->   	
-   	<dependency>
-	    <groupId>com.fasterxml.jackson.datatype</groupId>
-	    <artifactId>jackson-datatype-joda</artifactId>
-	    <version>${fasterxml.jaxrs.version}</version>
-   	</dependency>
 <!-- ========HTTP CLIENT========== -->
 	<dependency>
 		<groupId>org.apache.httpcomponents</groupId>
@@ -139,13 +115,6 @@
 	    <artifactId>commons-lang3</artifactId>
 	    <version>${commons.lang}</version>
 	</dependency>
-<!-- ========COMMONS IO========== -->
-	<dependency>
-	    <groupId>commons-io</groupId>
-	    <artifactId>commons-io</artifactId>
-	    <version>${commons.io}</version>
-	</dependency>
-
 <!-- ================== -->
 <!-- LOGGING START      -->
 <!-- ==================--> 
@@ -175,13 +144,6 @@
 	  <artifactId>log4j-taglib</artifactId>
 	  <version>${log4j2.version}</version>
 	</dependency>
-<!-- ========JAVAX INJECT========== -->
-	<dependency>
-		<groupId>javax.inject</groupId>
-		<artifactId>javax.inject</artifactId>
-		<version>${javax.inject.version}</version>
-	</dependency>
-	
 <!-- ========JSR 250 API========== --> 
 	<dependency>
 		<groupId>javax.annotation</groupId>

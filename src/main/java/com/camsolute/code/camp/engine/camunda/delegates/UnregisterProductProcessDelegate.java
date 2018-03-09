@@ -26,15 +26,11 @@ import org.camunda.bpm.engine.delegate.Expression;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.engine.impl.persistence.entity.ExecutionEntity;
 
-import com.camsolute.code.camp.core.rest.order.OrderRestDao;
-import com.camsolute.code.camp.core.rest.process.OrderProcessRestDao;
-import com.camsolute.code.camp.models.business.Order;
-import com.camsolute.code.camp.models.business.OrderProcess;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.camsolute.code.camp.lib.models.process.Process;
+import com.camsolute.code.camp.lib.models.process.ProductProcess;
+import com.camsolute.code.camp.lib.models.product.Product;
+import com.camsolute.code.camp.lib.models.product.ProductRest;
+import com.camsolute.code.camp.lib.utilities.Util;
 
 
 public class UnregisterProductProcessDelegate implements JavaDelegate {
@@ -50,11 +46,10 @@ public class UnregisterProductProcessDelegate implements JavaDelegate {
 		
 //		PostRestClient client = new PostRestClient();
 		
-		String orderNumber = (String) execution.getVariable("orderNumber");
-		String orderId = (String) execution.getVariable("orderId");
-		String orderStatus = (String) execution.getVariable("orderStatus");
+		String objectBusinessId = (String) execution.getVariable("objectBusinessId");
+		String objectId = (String) execution.getVariable("objectId");
+		String objectStatus = (String) execution.getVariable("objectStatus");
 		String processName = (String) getProcessName().getValue(execution);
-//		String activityId = ((ExecutionEntity) execution).getActivityId();
 		String processInstanceId = ((ExecutionEntity) execution).getProcessInstanceId();
 		String businessKey = ((ExecutionEntity) execution).getBusinessKey();
 		String tenantId = ((ExecutionEntity) execution).getTenantId();
@@ -62,10 +57,11 @@ public class UnregisterProductProcessDelegate implements JavaDelegate {
 		String definitionId = ((ExecutionEntity) execution).getProcessDefinitionId();
 		boolean suspended = ((ExecutionEntity) execution).isSuspended();
 		boolean ended = ((ExecutionEntity) execution).isEnded();
-		OrderProcess process = new OrderProcess(processInstanceId, businessKey, processName, definitionId,tenantId, caseInstanceId,ended,suspended);
+		String executionId = ((ExecutionEntity) execution).getId();
+//		Process<Product,ProductProcess> process = new Process<Product,ProductProcess>(executionId, processInstanceId, businessKey, processName, definitionId,tenantId, caseInstanceId,ended,suspended,Process.ProcessType.product_process);
 		
 //		ProductProcessRestDao.instance().registerProcess(orderNumber, process);
-	
+		ProductRest.instance().delProcessReference(objectBusinessId, processInstanceId, businessKey, !Util._IN_PRODUCTION);
 	}
 
 	public Expression getProcessName() {

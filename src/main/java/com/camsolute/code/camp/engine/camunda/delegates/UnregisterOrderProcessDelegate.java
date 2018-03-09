@@ -26,15 +26,16 @@ import org.camunda.bpm.engine.delegate.Expression;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.engine.impl.persistence.entity.ExecutionEntity;
 
-import com.camsolute.code.camp.core.rest.process.OrderProcessRestDao;
-import com.camsolute.code.camp.models.business.OrderProcess;
+import com.camsolute.code.camp.lib.utilities.Util;
+import com.camsolute.code.camp.lib.models.process.Process;
+import com.camsolute.code.camp.lib.models.process.OrderProcess;
+import com.camsolute.code.camp.lib.models.order.OrderRest;
+import com.camsolute.code.camp.lib.models.order.Order;
 
 
 public class UnregisterOrderProcessDelegate implements JavaDelegate {
 	public static final String _F = "["+UnregisterOrderProcessDelegate.class.getSimpleName()+"]";
-	public static final boolean _DEBUG = true;
 	private static String fmt = "[%15s] [%s]";
-	public static final boolean _IN_PRODUCTION = false;
     private static final Logger LOG = LogManager.getLogger("RegisterOrderProcessDelegate");
 	
     private Expression processName;
@@ -45,43 +46,54 @@ public class UnregisterOrderProcessDelegate implements JavaDelegate {
 		long startTime = System.currentTimeMillis();
 		String _f = null;
 		String msg = null;
-		if(_DEBUG) {
+		if(!Util._IN_PRODUCTION) {
 			_f = "[RegisterOrderProcessDelegate]";
-			msg = "====[ register order process ]====";LOG.traceEntry(String.format(fmt,(_f+">>>>>>>>>").toUpperCase(),msg));
+			msg = "====[ register object process ]====";LOG.traceEntry(String.format(fmt,(_f+">>>>>>>>>").toUpperCase(),msg));
 		}
 
-		String orderNumber = (String) execution.getVariable("orderNumber");
-		if(_DEBUG){msg = "----[orderNumber('"+orderNumber+"') ]----";LOG.info(String.format(fmt, _f,msg));}
-		String orderId = (String) execution.getVariable("orderId");
-		if(_DEBUG){msg = "----[orderId('"+orderId+"') ]----";LOG.info(String.format(fmt, _f,msg));}
-		String orderStatus = (String) execution.getVariable("orderStatus");
-		if(_DEBUG){msg = "----[orderStatus('"+orderStatus+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		String objectBusinessId = (String) execution.getVariable("objectBusinessId");
+		String objectId = (String) execution.getVariable("objectId");
+		String objectStatus = (String) execution.getVariable("objectStatus");
 		String processName = (String) getProcessName().getValue(execution);
-		if(_DEBUG){msg = "----[processName('"+processName+"') ]----";LOG.info(String.format(fmt, _f,msg));}
 		String processInstanceId = ((ExecutionEntity) execution).getProcessInstanceId();
-		if(_DEBUG){msg = "----[processInstanceId('"+processInstanceId+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		String businessKey = ((ExecutionEntity) execution).getBusinessKey();
-		if(_DEBUG){msg = "----[businessKey('"+businessKey+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		String tenantId = ((ExecutionEntity) execution).getTenantId();
-		if(_DEBUG){msg = "----[tenantId('"+tenantId+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		String caseInstanceId = ((ExecutionEntity) execution).getCaseInstanceId();
-		if(_DEBUG){msg = "----[caseInstanceId('"+caseInstanceId+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		String definitionId = ((ExecutionEntity) execution).getProcessDefinitionId();
-		if(_DEBUG){msg = "----[definitionId('"+definitionId+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		boolean suspended = ((ExecutionEntity) execution).isSuspended();
-		if(_DEBUG){msg = "----[suspended('"+suspended+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		boolean ended = ((ExecutionEntity) execution).isEnded();
-		if(_DEBUG){msg = "----[ended('"+ended+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		String executionId = ((ExecutionEntity) execution).getId();
+//	Process<Order,OrderProcess> process = new Process<Order,OrderProcess>(executionId, processInstanceId, businessKey, processName, definitionId,tenantId, caseInstanceId,ended,suspended,Process.ProcessType.product_process);
+		if(!Util._IN_PRODUCTION){msg = "----[objectBusinessId('"+objectBusinessId+"') ]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[objectId('"+objectId+"') ]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[objectStatus('"+objectStatus+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[processName('"+processName+"') ]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[executionId('"+executionId+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[processInstanceId('"+processInstanceId+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[businessKey('"+businessKey+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[tenantId('"+tenantId+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[caseInstanceId('"+caseInstanceId+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[definitionId('"+definitionId+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[suspended('"+suspended+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[ended('"+ended+"')]----";LOG.info(String.format(fmt, _f,msg));}
+	
+	if(!Util._IN_PRODUCTION){msg = "----[objectBusinessId '"+objectBusinessId+"']----";LOG.info(String.format(fmt, _f,msg));}
+	if(!Util._IN_PRODUCTION){msg = "----[objectId '"+objectId+"']----";LOG.info(String.format(fmt, _f,msg));}
+	if(!Util._IN_PRODUCTION){msg = "----[objectStatus '"+objectStatus+"']----";LOG.info(String.format(fmt, _f,msg));}
+	if(!Util._IN_PRODUCTION){msg = "----[businessKey '"+businessKey+"']----";LOG.info(String.format(fmt, _f,msg));}
+	if(!Util._IN_PRODUCTION){msg = "----[processInstanceId '"+processInstanceId+"']----";LOG.info(String.format(fmt, _f,msg));}
+	if(!Util._IN_PRODUCTION){msg = "----[processName '"+processName+"']----";LOG.info(String.format(fmt, _f,msg));}
+
+//		Process<Order,OrderProcess> process = new Process<Order,OrderProcess>(executionId, processInstanceId, businessKey, processName, definitionId,tenantId, caseInstanceId,ended,suspended, Process.ProcessType.customer_order_process);
+//		
+//		if(!Util._IN_PRODUCTION){msg = "----[created OrderProcess instance '"+processInstanceId+"']----";LOG.info(String.format(fmt, _f,msg));}
 		
-		OrderProcess process = new OrderProcess(processInstanceId, businessKey, processName, definitionId,tenantId, caseInstanceId,ended,suspended);
 		
-		if(_DEBUG){msg = "----[created OrderProcess instance '"+processInstanceId+"']----";LOG.info(String.format(fmt, _f,msg));}
+	OrderRest.instance().delProcessReference(objectBusinessId, processInstanceId, businessKey, !Util._IN_PRODUCTION);
+
+		if(!Util._IN_PRODUCTION){msg = "----[unregistered object process('"+processInstanceId+"') with object('"+objectBusinessId+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		
-		OrderProcessRestDao.instance().unregister(orderNumber, process);
-		
-		if(_DEBUG){msg = "----[unregistered order process('"+process.instanceId()+"') with order('"+orderNumber+"')]----";LOG.info(String.format(fmt, _f,msg));}
-		
-		if(_DEBUG) {
+		if(!Util._IN_PRODUCTION) {
 			String time = "[ExecutionTime:"+(System.currentTimeMillis()-startTime)+")]====";
 			msg = "====[execute completed.]====";LOG.info(String.format(fmt,("<<<<<<<<<"+_f).toUpperCase(),msg+time));
 		}

@@ -19,9 +19,6 @@
  ******************************************************************************/
 package com.camsolute.code.camp.engine.camunda.delegates;
 
-//import java.text.SimpleDateFormat;
-import java.util.HashMap;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -78,15 +75,15 @@ public class OrderMessengerDelegate implements JavaDelegate {
 			msg = "====[ handling order message '"+messageName+"' from process '"+processName+"']====";LOG.traceEntry(String.format(fmt,(_f+">>>>>>>>>").toUpperCase(),msg));
 		}
 
-		String orderNumber = (String) execution.getVariable("orderNumber");
-		String orderId = (String) execution.getVariable("orderId");
-		String orderStatus = (String) execution.getVariable("orderStatus");
+		String objectBusinessId = (String) execution.getVariable("objectBusinessId");
+		String objectId = (String) execution.getVariable("objectId");
+		String objectStatus = (String) execution.getVariable("objectStatus");
 		String businessKey = ((ExecutionEntity) execution).getBusinessKey();
 		String processInstanceId = ((ExecutionEntity) execution).getProcessInstanceId();
 		
-		if(log && _DEBUG){msg = "----[orderNumber '"+orderNumber+"']----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && _DEBUG){msg = "----[orderId '"+orderId+"']----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && _DEBUG){msg = "----[orderStatus '"+orderStatus+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(log && _DEBUG){msg = "----[objectBusinessId '"+objectBusinessId+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(log && _DEBUG){msg = "----[objectId '"+objectId+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(log && _DEBUG){msg = "----[objectStatus '"+objectStatus+"']----";LOG.info(String.format(fmt, _f,msg));}
 		if(log && _DEBUG){msg = "----[messageName '"+messageName+"']----";LOG.info(String.format(fmt, _f,msg));}
 		if(log && _DEBUG){msg = "----[businessKey '"+businessKey+"']----";LOG.info(String.format(fmt, _f,msg));}
 		if(log && _DEBUG){msg = "----[processName '"+processName+"']----";LOG.info(String.format(fmt, _f,msg));}
@@ -94,37 +91,37 @@ public class OrderMessengerDelegate implements JavaDelegate {
 		
 		
 		execution.getProcessEngineServices().getRuntimeService().createMessageCorrelation(messageName)
-		    .processInstanceVariableEquals("orderNumber", orderNumber)
-		    .processInstanceVariableEquals("orderId", orderId)
-			.setVariable("orderNumber", orderNumber)
-			.setVariable("orderId",orderId)
-			.setVariable("orderStatus", orderStatus)
+		    .processInstanceVariableEquals("objectBusinessId", objectBusinessId)
+		    .processInstanceVariableEquals("objectId", objectId)
+			.setVariable("objectBusinessId", objectBusinessId)
+			.setVariable("objectId",objectId)
+			.setVariable("objectStatus", objectStatus)
 			.processInstanceBusinessKey(businessKey)
-			.correlate();
+			.correlateWithResult();
 		
 		/*
 		 * This would also work....
 		 */
 /*		
 		HashMap<String,VariableValue> correlationKeys = new HashMap<String,VariableValue>();
-		correlationKeys.put("orderNumber", new VariableValue(orderNumber, "String"));
-		correlationKeys.put("orderId", new VariableValue(orderId, "String"));
+		correlationKeys.put("objectBusinessId", new VariableValue(objectBusinessId, "String"));
+		correlationKeys.put("objectId", new VariableValue(objectId, "String"));
 		
 
 		HashMap<String,VariableValue> processVariables = new HashMap<String,VariableValue>();
-		processVariables.put("orderNumber", new VariableValue(orderNumber, "String"));
-		processVariables.put("orderId", new VariableValue(orderId, "String"));
-		processVariables.put("orderStatus", new VariableValue(orderStatus, "String"));
+		processVariables.put("objectBusinessId", new VariableValue(objectBusinessId, "String"));
+		processVariables.put("objectId", new VariableValue(objectId, "String"));
+		processVariables.put("objectStatus", new VariableValue(objectStatus, "String"));
 
 		HashMap<String,VariableValue> correlationKeys = new HashMap<String,VariableValue>();
-		correlationKeys.put("orderNumber", new VariableValue(orderNumber, "String"));
-		correlationKeys.put("orderId", new VariableValue(orderId, "String"));
+		correlationKeys.put("objectBusinessId", new VariableValue(objectBusinessId, "String"));
+		correlationKeys.put("objectId", new VariableValue(objectId, "String"));
 		
 
 		HashMap<String,VariableValue> processVariables = new HashMap<String,VariableValue>();
-		processVariables.put("orderNumber", new VariableValue(orderNumber, "String"));
-		processVariables.put("orderId", new VariableValue(orderId, "String"));
-		processVariables.put("orderStatus", new VariableValue(orderStatus, "String"));
+		processVariables.put("objectBusinessId", new VariableValue(objectBusinessId, "String"));
+		processVariables.put("objectId", new VariableValue(objectId, "String"));
+		processVariables.put("objectStatus", new VariableValue(objectStatus, "String"));
 
 		.processInstanceId(processInstanceId)
 		execution.getProcessEngineServices().getRuntimeService().correlateMessage(messageName, businessKey, processVariables);

@@ -26,8 +26,15 @@ import org.camunda.bpm.engine.delegate.Expression;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.engine.impl.persistence.entity.ExecutionEntity;
 
-import com.camsolute.code.camp.core.rest.process.OrderProcessRestDao;
-import com.camsolute.code.camp.models.business.OrderProcess;
+import com.camsolute.code.camp.lib.models.order.Order;
+import com.camsolute.code.camp.lib.models.order.OrderRest;
+import com.camsolute.code.camp.lib.models.process.OrderProcess;
+import com.camsolute.code.camp.lib.models.process.Process;
+import com.camsolute.code.camp.lib.models.process.ProcessRest;
+import com.camsolute.code.camp.lib.models.process.ProductProcess;
+import com.camsolute.code.camp.lib.models.product.Product;
+import com.camsolute.code.camp.lib.models.product.ProductRest;
+import com.camsolute.code.camp.lib.utilities.Util;
 
 
 public class RegisterOrderProcessDelegate implements JavaDelegate {
@@ -52,12 +59,12 @@ public class RegisterOrderProcessDelegate implements JavaDelegate {
 			msg = "====[ register order process ]====";LOG.traceEntry(String.format(fmt,(_f+">>>>>>>>>").toUpperCase(),msg));
 		}
 
-		String orderNumber = (String) execution.getVariable("orderNumber");
-		if(_DEBUG){msg = "----[orderNumber('"+orderNumber+"') ]----";LOG.info(String.format(fmt, _f,msg));}
-		String orderId = (String) execution.getVariable("orderId");
-		if(_DEBUG){msg = "----[orderId('"+orderId+"') ]----";LOG.info(String.format(fmt, _f,msg));}
-		String orderStatus = (String) execution.getVariable("orderStatus");
-		if(_DEBUG){msg = "----[orderStatus('"+orderStatus+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		String objectBusinessId = (String) execution.getVariable("objectBusinessId");
+		if(_DEBUG){msg = "----[objectBusinessId('"+objectBusinessId+"') ]----";LOG.info(String.format(fmt, _f,msg));}
+		String objectId = (String) execution.getVariable("objectId");
+		if(_DEBUG){msg = "----[objectId('"+objectId+"') ]----";LOG.info(String.format(fmt, _f,msg));}
+		String objectStatus = (String) execution.getVariable("objectStatus");
+		if(_DEBUG){msg = "----[objectStatus('"+objectStatus+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		String processName = (String) getProcessName().getValue(execution);
 		if(_DEBUG){msg = "----[processName('"+processName+"') ]----";LOG.info(String.format(fmt, _f,msg));}
 		String processInstanceId = ((ExecutionEntity) execution).getProcessInstanceId();
@@ -74,15 +81,14 @@ public class RegisterOrderProcessDelegate implements JavaDelegate {
 		if(_DEBUG){msg = "----[suspended('"+suspended+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		boolean ended = ((ExecutionEntity) execution).isEnded();
 		if(_DEBUG){msg = "----[ended('"+ended+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		String executionId = ((ExecutionEntity) execution).getId();
 		
-		OrderProcess process = new OrderProcess(processInstanceId, businessKey, processName, definitionId,tenantId, caseInstanceId,ended,suspended);
+		Process<Order,OrderProcess> process = new Process<Order,OrderProcess>(executionId, processInstanceId, businessKey, processName, definitionId,tenantId, caseInstanceId,ended,suspended,Process.ProcessType.product_process);
 		
-		if(_DEBUG){msg = "----[created OrderProcess instance '"+processInstanceId+"']----";LOG.info(String.format(fmt, _f,msg));}
+		ProcessRest.instance().save(process, !Util._IN_PRODUCTION);
 		
-		OrderProcessRestDao.instance().register(orderNumber, process);
-		
-		if(_DEBUG){msg = "----[registered order process('"+process.instanceId()+"') with order('"+orderNumber+"')]----";LOG.info(String.format(fmt, _f,msg));}
-		
+		OrderRest.instance().addProcessReference(objectBusinessId, processInstanceId, businessKey, !Util._IN_PRODUCTION);
+				
 		if(_DEBUG) {
 			String time = "[ExecutionTime:"+(System.currentTimeMillis()-startTime)+")]====";
 			msg = "====[execute completed.]====";LOG.info(String.format(fmt,("<<<<<<<<<"+_f).toUpperCase(),msg+time));

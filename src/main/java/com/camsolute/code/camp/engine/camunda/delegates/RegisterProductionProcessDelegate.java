@@ -27,9 +27,15 @@ import org.camunda.bpm.engine.delegate.Expression;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.engine.impl.persistence.entity.ExecutionEntity;
 
-import com.camsolute.code.camp.core.U;
-import com.camsolute.code.camp.core.rest.process.OrderProcessRestDao;
-import com.camsolute.code.camp.models.business.OrderProcess;
+import com.camsolute.code.camp.lib.models.order.Order;
+import com.camsolute.code.camp.lib.models.order.OrderRest;
+import com.camsolute.code.camp.lib.models.process.Process;
+import com.camsolute.code.camp.lib.models.process.ProcessRest;
+import com.camsolute.code.camp.lib.models.process.ProductProcess;
+import com.camsolute.code.camp.lib.models.process.ProductionProcess;
+import com.camsolute.code.camp.lib.models.product.Product;
+import com.camsolute.code.camp.lib.models.product.ProductRest;
+import com.camsolute.code.camp.lib.utilities.Util;
 
 
 public class RegisterProductionProcessDelegate implements JavaDelegate {
@@ -64,28 +70,38 @@ public class RegisterProductionProcessDelegate implements JavaDelegate {
 			msg = "====[ registering production process: ]====";LOG.traceEntry(String.format(fmt,_f,msg));
 		}
 		
-		String orderNumber = (String) execution.getVariable("orderNumber");
-		String orderId = (String) execution.getVariable("orderId");
-		String orderStatus = (String) execution.getVariable("orderStatus");
+		String objectBusinessId = (String) execution.getVariable("objectBusinessId");
+		String objectId = (String) execution.getVariable("objectId");
+		String objectStatus = (String) execution.getVariable("objectStatus");
 //		String activityId = ((ExecutionEntity) execution).getActivityId();
 		String processName = (String) getProcessName().getValue(execution);
 		String tenantId =((ExecutionEntity) execution).getTenantId();
 		String caseInstanceId = ((ExecutionEntity) execution).getCaseInstanceId(); 
-		String instanceId = ((ExecutionEntity) execution).getProcessInstanceId();
+		String processInstanceId = ((ExecutionEntity) execution).getProcessInstanceId();
 		String businessKey = ((ExecutionEntity) execution).getBusinessKey();
 		String definitionId = ((ExecutionEntity) execution).getProcessDefinitionId();
 		boolean ended = ((ExecutionEntity) execution).isEnded();
 		boolean suspended = ((ExecutionEntity) execution).isSuspended();
-		OrderProcess process = new OrderProcess(instanceId, businessKey, processName, definitionId,tenantId,caseInstanceId, ended, suspended);
+		String executionId = ((ExecutionEntity) execution).getId();
 		
-		if(log && _DEBUG){msg = "----[orderNumber '"+orderNumber+"']----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && _DEBUG){msg = "----[orderId '"+orderId+"']----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && _DEBUG){msg = "----[orderStatus '"+orderStatus+"']----";LOG.info(String.format(fmt, _f,msg));}
+		Process<Order,ProductionProcess> process = new Process<Order,ProductionProcess>(executionId, processInstanceId, businessKey, processName, definitionId,tenantId, caseInstanceId,ended,suspended,Process.ProcessType.product_process);
+		
+		ProcessRest.instance().save(process, !Util._IN_PRODUCTION);
+		
+		OrderRest.instance().addProcessReference(objectBusinessId, processInstanceId, businessKey, !Util._IN_PRODUCTION);
+		
+		if(log && _DEBUG){msg = "----[objectBusinessId '"+objectBusinessId+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(log && _DEBUG){msg = "----[objectId '"+objectId+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(log && _DEBUG){msg = "----[objectStatus '"+objectStatus+"']----";LOG.info(String.format(fmt, _f,msg));}
 		if(log && _DEBUG){msg = "----[businessKey '"+businessKey+"']----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && _DEBUG){msg = "----[processInstanceId '"+instanceId+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(log && _DEBUG){msg = "----[processInstanceId '"+processInstanceId+"']----";LOG.info(String.format(fmt, _f,msg));}
 		if(log && _DEBUG){msg = "----[processName '"+processName+"']----";LOG.info(String.format(fmt, _f,msg));}
 
-		OrderProcessRestDao.instance().register(orderNumber, process);
+		if(log && !Util._IN_PRODUCTION) {
+			String time = "[ExecutionTime:"+(System.currentTimeMillis()-startTime)+")]====";
+			msg = "====[_execute completed.]====";LOG.info(String.format(fmt,("<<<<<<<<<"+_f).toUpperCase(),msg+time));
+		}
+		
 	}
 
 }

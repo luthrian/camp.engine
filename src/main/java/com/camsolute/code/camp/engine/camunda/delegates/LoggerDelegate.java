@@ -27,8 +27,6 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import com.camsolute.code.camp.lib.utilities.Util;
 
 public class LoggerDelegate implements JavaDelegate {
-	public static final boolean _DEBUG = true;
-	public static final boolean _IN_PRODUCTION = false;
 	private static final Logger LOG = LogManager.getLogger(LoggerDelegate.class);
 	private static String fmt = "[%15s] [%s]";
 	public static final String _F = "["+LoggerDelegate.class.getSimpleName()+"]";
@@ -38,19 +36,19 @@ public class LoggerDelegate implements JavaDelegate {
 		long startTime = System.currentTimeMillis();
 		String _f = null;
 		String msg = null;
-		if(log && _DEBUG) {
+		if(log && !Util._IN_PRODUCTION) {
 			_f = "[_execute]";
 			msg = "====[ Logger delegate executed ]====";LOG.traceEntry(String.format(fmt,_f,msg));
 		}
 		
-		if(log && _DEBUG){msg = "----[processDefinitionId=" + execution.getProcessDefinitionId()+"]----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && _DEBUG){msg = "----[activtyId=" + execution.getCurrentActivityId()+"]----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && _DEBUG){msg = "----[activtyName='" + execution.getCurrentActivityName() + "']----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && _DEBUG){msg = "----[processInstanceId=" + execution.getProcessInstanceId()+"]----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && _DEBUG){msg = "----[businessKey=" + execution.getProcessBusinessKey()+"]----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && _DEBUG){msg = "----[executionId=" + execution.getId()+"]----";LOG.info(String.format(fmt, _f,msg));}
+		if(log && !Util._IN_PRODUCTION){msg = "----[processDefinitionId=" + execution.getProcessDefinitionId()+"]----";LOG.info(String.format(fmt, _f,msg));}
+		if(log && !Util._IN_PRODUCTION){msg = "----[activtyId=" + execution.getCurrentActivityId()+"]----";LOG.info(String.format(fmt, _f,msg));}
+		if(log && !Util._IN_PRODUCTION){msg = "----[activtyName='" + execution.getCurrentActivityName() + "']----";LOG.info(String.format(fmt, _f,msg));}
+		if(log && !Util._IN_PRODUCTION){msg = "----[processInstanceId=" + execution.getProcessInstanceId()+"]----";LOG.info(String.format(fmt, _f,msg));}
+		if(log && !Util._IN_PRODUCTION){msg = "----[businessKey=" + execution.getProcessBusinessKey()+"]----";LOG.info(String.format(fmt, _f,msg));}
+		if(log && !Util._IN_PRODUCTION){msg = "----[executionId=" + execution.getId()+"]----";LOG.info(String.format(fmt, _f,msg));}
 		
-		if(log && _DEBUG) {
+		if(log && !Util._IN_PRODUCTION) {
 			String time = "[ExecutionTime:"+(System.currentTimeMillis()-startTime)+")]====";
 			msg = "====[_execute completed.]====";LOG.info(String.format(fmt,("<<<<<<<<<"+_f).toUpperCase(),msg+time));
 		}
