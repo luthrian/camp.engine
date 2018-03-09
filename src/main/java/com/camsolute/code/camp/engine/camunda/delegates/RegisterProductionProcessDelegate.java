@@ -84,7 +84,7 @@ public class RegisterProductionProcessDelegate implements JavaDelegate {
 		boolean suspended = ((ExecutionEntity) execution).isSuspended();
 		String executionId = ((ExecutionEntity) execution).getId();
 		
-		Process<Order,ProductionProcess> process = new Process<Order,ProductionProcess>(executionId, processInstanceId, businessKey, processName, definitionId,tenantId, caseInstanceId,ended,suspended,Process.ProcessType.product_process);
+		Process<Order> process = new Process<Order>(executionId, processInstanceId, businessKey, processName, definitionId,tenantId, caseInstanceId,ended,suspended,Process.ProcessType.product_process);
 		
 		ProcessRest.instance().save(process, !Util._IN_PRODUCTION);
 		

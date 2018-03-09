@@ -57,7 +57,7 @@ public class RegisterProductProcessDelegate implements JavaDelegate {
 		boolean ended = ((ExecutionEntity) execution).isEnded();
 		String executionId = ((ExecutionEntity) execution).getId();
 		
-		Process<Product,ProductProcess> process = new Process<Product,ProductProcess>(executionId, processInstanceId, businessKey, processName, definitionId,tenantId, caseInstanceId,ended,suspended,Process.ProcessType.product_process);
+		Process<Product> process = new Process<Product>(executionId, processInstanceId, businessKey, processName, definitionId,tenantId, caseInstanceId,ended,suspended,Process.ProcessType.product_process);
 		
 		ProcessRest.instance().save(process, !Util._IN_PRODUCTION);
 		

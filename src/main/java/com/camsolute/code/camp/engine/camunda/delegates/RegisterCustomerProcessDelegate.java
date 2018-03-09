@@ -90,7 +90,7 @@ public class RegisterCustomerProcessDelegate implements JavaDelegate {
 		if(_DEBUG){msg = "----[ended('"+ended+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		String executionId = ((ExecutionEntity) execution).getId();
 		
-		Process<Customer,CustomerProcess> process = new Process<Customer,CustomerProcess>(executionId, processInstanceId, businessKey, processName, definitionId,tenantId, caseInstanceId,ended,suspended,Process.ProcessType.customer_process);
+		Process<Customer> process = new Process<Customer>(executionId, processInstanceId, businessKey, processName, definitionId,tenantId, caseInstanceId,ended,suspended,Process.ProcessType.customer_process);
 		
 		ProcessRest.instance().save(process, !Util._IN_PRODUCTION);
 		

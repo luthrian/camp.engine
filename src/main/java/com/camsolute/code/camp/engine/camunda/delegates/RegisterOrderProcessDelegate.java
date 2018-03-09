@@ -83,7 +83,7 @@ public class RegisterOrderProcessDelegate implements JavaDelegate {
 		if(_DEBUG){msg = "----[ended('"+ended+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		String executionId = ((ExecutionEntity) execution).getId();
 		
-		Process<Order,OrderProcess> process = new Process<Order,OrderProcess>(executionId, processInstanceId, businessKey, processName, definitionId,tenantId, caseInstanceId,ended,suspended,Process.ProcessType.product_process);
+		Process<Order> process = new Process<Order>(executionId, processInstanceId, businessKey, processName, definitionId,tenantId, caseInstanceId,ended,suspended,Process.ProcessType.product_process);
 		
 		ProcessRest.instance().save(process, !Util._IN_PRODUCTION);
 		
