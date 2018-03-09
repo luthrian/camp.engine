@@ -1,0 +1,260 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.camsolute.code</groupId>
+  <artifactId>camp.engine</artifactId>
+  <version>0.1</version>
+  <packaging>war</packaging>
+  <name>Camp PMF Camunda example</name>
+   <organization>
+  	<name>Camsolute.com</name>
+  </organization>
+  
+  <properties>
+  	<!-- CAMSOLUTE START -->
+  	<camp.version>0.6.5</camp.version>
+	<!-- JSON TRANSFORMATION START -->
+    <jsoup.version>1.10.3</jsoup.version>
+	<!-- JAVA START -->
+	<jdkName>JavaSE-1.8</jdkName>
+	<jdk.version>1.8</jdk.version>
+	<!-- HIBERNATION START -->
+	<junit.version>4.9</junit.version>
+	<mockobjects.version>0.09</mockobjects.version>
+
+	<!-- DATABASE START -->
+	<mariadb.version>1.1.7</mariadb.version>
+	<commons.dbcp.version>2.1.1</commons.dbcp.version>
+	
+	<!-- PERSISTENCE START -->
+	<batoo.version>2.0.1.2</batoo.version>
+	<hibernate.version>4.0.1.Final</hibernate.version>
+	<!-- PERSISTENCE END -->
+	
+	<!-- LOGGING START -->
+	<slf4j.version>1.7.25</slf4j.version>
+	<log4j2.version>2.9.0</log4j2.version>
+	<!-- LOGGING END -->
+	
+	<!-- SPRING START -->
+	<spring.version>3.1.2.RELEASE</spring.version>
+
+	<sd.commons.version>1.4.0.RELEASE</sd.commons.version>
+	<sd.jpa.version>1.2.0.RELEASE</sd.jpa.version>
+	<sd.rest.version>1.0.0.RELEASE</sd.rest.version>
+
+	<httpclient.version>4.3.3</httpclient.version>
+	<httpcore.version>4.3.2</httpcore.version>
+	<commons.codec.version>1.9</commons.codec.version>
+
+	<camunda.version>7.7.0</camunda.version>
+
+	<javax.version>3.1.0</javax.version>
+	<jolbox.version>0.7.1.RELEASE</jolbox.version>
+	<javax.inject.version>1</javax.inject.version>
+	<javax.annotation.version>1.0</javax.annotation.version>
+	<resteasy.version>3.0.8.Final</resteasy.version>
+	<glassfish.version>3.0.0</glassfish.version>
+	<glassfish.jersey.version>2.0-m13-3</glassfish.jersey.version>
+	<persistence.version>2.0</persistence.version>
+	<joda.time.version>2.3</joda.time.version>
+	<jersey.version>2.26</jersey.version>
+	<eclipse.jetty.version>9.4.7.RC0</eclipse.jetty.version>
+	<maven.surefire>3.5.0</maven.surefire>
+    <jsoup.version>1.10.3</jsoup.version>
+	<fasterxml.jaxrs.version>2.2.1</fasterxml.jaxrs.version>
+    <http.components.client>4.5.3</http.components.client>
+    <http.components.core>4.4.6</http.components.core>
+    <http.components.mime>4.5.3</http.components.mime>
+    <apache.commons.pool2.version>2.4.2</apache.commons.pool2.version>
+    <commons.logging>1.2</commons.logging>
+    <commons.lang>3.5</commons.lang>
+    <commons.io>2.5</commons.io>
+  </properties>
+  <dependencies>
+	<!-- ================== -->
+	<!-- CAMSOLUTE START    -->   	
+	<!-- ================== -->
+     <dependency>
+      <groupId>com.camsolute.code</groupId>
+      <artifactId>camp.lib</artifactId>
+      <version>${camp.version}</version>
+      <!-- <scope>provided</scope>-->
+    </dependency>
+	
+	<!-- ================== -->
+	<!-- CAMUNDA START      -->   	
+	<!-- ================== -->
+     <dependency>
+      <groupId>org.camunda.bpm</groupId>
+      <artifactId>camunda-engine</artifactId>
+      <version>${camunda.version}</version>
+      <scope>provided</scope>
+    </dependency>
+	<!-- ================== -->
+	<!-- MAVEN START        -->   	
+	<!-- ================== -->
+	<dependency>
+    	<groupId>org.apache.maven.plugins</groupId>
+    	<artifactId>maven-compiler-plugin</artifactId>
+    	<version>3.7.0</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-war-plugin</artifactId>
+	    <version>3.1.0</version>
+	</dependency>
+<!-- =======JODA TIME========= -->
+	<dependency>
+		<groupId>joda-time</groupId>
+		<artifactId>joda-time</artifactId>
+		<version>${joda.time.version}</version>
+	</dependency>
+<!-- ========JACKSON JODA TIME========== -->   	
+   	<dependency>
+	    <groupId>com.fasterxml.jackson.datatype</groupId>
+	    <artifactId>jackson-datatype-joda</artifactId>
+	    <version>${fasterxml.jaxrs.version}</version>
+   	</dependency>
+<!-- ========HTTP CLIENT========== -->
+	<dependency>
+		<groupId>org.apache.httpcomponents</groupId>
+		<artifactId>httpclient</artifactId>
+		<version>${http.components.client}</version>
+	</dependency>
+<!-- ========HTTP CORE========== -->
+	<dependency>
+		<groupId>org.apache.httpcomponents</groupId>
+		<artifactId>httpcore</artifactId>
+		<version>${http.components.core}</version>
+    </dependency>
+<!-- ========COMMONS LOGGING========== -->
+	<dependency>
+	    <groupId>commons-logging</groupId>
+	    <artifactId>commons-logging</artifactId>
+	    <version>${commons.logging}</version>
+	</dependency>
+<!-- ========COMMONS LANG3========== -->
+	<dependency>
+	    <groupId>org.apache.commons</groupId>
+	    <artifactId>commons-lang3</artifactId>
+	    <version>${commons.lang}</version>
+	</dependency>
+<!-- ========COMMONS IO========== -->
+	<dependency>
+	    <groupId>commons-io</groupId>
+	    <artifactId>commons-io</artifactId>
+	    <version>${commons.io}</version>
+	</dependency>
+
+<!-- ================== -->
+<!-- LOGGING START      -->
+<!-- ==================--> 
+ 	<dependency>
+    	<groupId>org.slf4j</groupId>
+    	<artifactId>slf4j-api</artifactId>
+    	<version>${slf4j.version}</version>
+	</dependency>
+  	<dependency>
+    	<groupId>org.slf4j</groupId>
+    	<artifactId>slf4j-ext</artifactId>
+    	<version>${slf4j.version}</version>
+	</dependency>
+  	<dependency>
+    	<groupId>org.slf4j</groupId>
+    	<artifactId>slf4j-log4j12</artifactId>
+    	<version>${slf4j.version}</version>
+	</dependency>
+	
+	<dependency>
+	  <groupId>org.apache.logging.log4j</groupId>
+	  <artifactId>log4j-core</artifactId>
+	  <version>${log4j2.version}</version>
+	</dependency>
+	<dependency>
+	  <groupId>org.apache.logging.log4j</groupId>
+	  <artifactId>log4j-taglib</artifactId>
+	  <version>${log4j2.version}</version>
+	</dependency>
+<!-- ========JAVAX INJECT========== -->
+	<dependency>
+		<groupId>javax.inject</groupId>
+		<artifactId>javax.inject</artifactId>
+		<version>${javax.inject.version}</version>
+	</dependency>
+	
+<!-- ========JSR 250 API========== --> 
+	<dependency>
+		<groupId>javax.annotation</groupId>
+		<artifactId>jsr250-api</artifactId>
+		<version>${javax.annotation.version}</version>
+	</dependency>
+	
+<!-- ================== -->
+<!-- RESTEASY START     -->
+<!-- ================== --> 
+	<dependency>
+		<groupId>org.jboss.resteasy</groupId>
+		<artifactId>resteasy-jaxrs</artifactId>
+		<version>${resteasy.version}</version>
+	</dependency>
+
+	<dependency>
+		<groupId>org.jboss.resteasy</groupId>
+		<artifactId>resteasy-client</artifactId>
+	  <version>${resteasy.version}</version> 
+	</dependency>
+  </dependencies>
+<repositories>
+        <repository>
+        	<id>Local</id>
+        	<name>My Local Maven Repository</name>
+        	<url>file:///home/chris/.m2/repository</url>
+        	<layout>default</layout>
+        </repository>
+</repositories>
+ <build>
+     <plugins>
+	<plugin>
+	  <groupId>org.apache.maven.plugins</groupId>
+	  <artifactId>maven-compiler-plugin</artifactId>
+	  <version>2.1</version><!-- 3.0 -->
+	  <configuration>
+	    <source>1.8</source>
+	    <target>1.8</target>
+	  </configuration>
+	</plugin>
+     <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.3</version>
+        <configuration>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+        </configuration>
+      </plugin>
+      <!--  
+      <plugin>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-dependency-plugin</artifactId>
+	    <version>2.9</version>
+	    <executions>
+	        <execution>
+	            <id>copy-dependencies</id>
+	            <phase>package</phase>
+	            <goals>
+	                <goal>copy-dependencies</goal>
+	            </goals>
+	            <configuration>
+	                <outputDirectory>${project.build.directory}/lib</outputDirectory>
+	                <overWriteReleases>false</overWriteReleases>
+	                <overWriteSnapshots>false</overWriteSnapshots>
+                	<overWriteIfNewer>true</overWriteIfNewer>
+            	</configuration>
+        	</execution>
+    	</executions>
+	</plugin>
+	-->
+    </plugins>
+    
+  </build>
+  
+ </project>
