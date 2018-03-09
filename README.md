@@ -1,4 +1,4 @@
-# camp.lib
+# camp.engine
 
 A Simple Order Process Example employing Camunda and the CAMP Process Management Framework.
 
