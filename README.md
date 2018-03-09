@@ -1,0 +1,6 @@
+# camp.lib
+
+A Simple Order Process Example employing Camunda and the CAMP Process Management Framework.
+
+NOTE: This is work in progress...  
+CURRENT STAGE: ..coding ongoing...
