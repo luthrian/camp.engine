@@ -26,9 +26,6 @@ import org.camunda.bpm.engine.delegate.Expression;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.engine.impl.persistence.entity.ExecutionEntity;
 
-import com.camsolute.code.camp.core.rest.process.OrderProcessRestDao;
-import com.camsolute.code.camp.models.business.OrderProcess;
-
 
 public class UnregisterCustomerProcessDelegate implements JavaDelegate {
 	public static final String _F = "["+UnregisterCustomerProcessDelegate.class.getSimpleName()+"]";
