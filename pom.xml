@@ -59,10 +59,8 @@
 	<javax.inject.version>1</javax.inject.version>
 	<javax.annotation.version>1.0</javax.annotation.version>
 	<resteasy.version>3.0.8.Final</resteasy.version>
-	<glassfish.version>3.0.0</glassfish.version>
-	<glassfish.jersey.version>2.0-m13-3</glassfish.jersey.version>
-	<persistence.version>2.0</persistence.version>
 	<joda.time.version>2.3</joda.time.version>
+	  <jax.rs.version>2.1</jax.rs.version>
 	<jersey.version>2.26</jersey.version>
     <http.components.client>4.5.3</http.components.client>
     <http.components.core>4.4.6</http.components.core>
@@ -81,7 +79,28 @@
       <version>${camp.version}</version>
       <!-- <scope>provided</scope>-->
     </dependency>
+	<dependency>
+		<groupId>org.jboss.resteasy</groupId>
+		<artifactId>resteasy-client</artifactId>
+		<version>${resteasy.version}</version>	   
+		 <!-- <version>3.1.4.Final</version> --> 
+	</dependency>
+<dependency>
+    <groupId>javax.ws.rs</groupId>
+    <artifactId>javax.ws.rs-api</artifactId>
+    <version>${jax.rs.version}</version>
+</dependency>
+<dependency>
+    <groupId>javax.annotation</groupId>
+    <artifactId>javax.annotation-api</artifactId>
+    <version>1.2</version>
+</dependency>
 	
+	  <dependency>
+	    <groupId>org.json</groupId>
+	    <artifactId>json</artifactId>
+	    <version>20170516</version>
+	  </dependency>
 	<!-- ================== -->
 	<!-- CAMUNDA START      -->   	
 	<!-- ================== -->
@@ -110,38 +129,6 @@
 		<artifactId>joda-time</artifactId>
 		<version>${joda.time.version}</version>
 	</dependency>
-<!-- ========HTTP CLIENT========== -->
-<!-- 
-	<dependency>
-		<groupId>org.apache.httpcomponents</groupId>
-		<artifactId>httpclient</artifactId>
-		<version>${http.components.client}</version>
-	</dependency>
- -->	
-<!-- ========HTTP CORE========== -->
-<!-- 
-	<dependency>
-		<groupId>org.apache.httpcomponents</groupId>
-		<artifactId>httpcore</artifactId>
-		<version>${http.components.core}</version>
-    </dependency>
- -->    
-<!-- ========COMMONS LOGGING========== -->
-<!-- 
-	<dependency>
-	    <groupId>commons-logging</groupId>
-	    <artifactId>commons-logging</artifactId>
-	    <version>${commons.logging}</version>
-	</dependency>
- -->
-<!-- ========COMMONS LANG3========== -->
-<!-- 
-	<dependency>
-	    <groupId>org.apache.commons</groupId>
-	    <artifactId>commons-lang3</artifactId>
-	    <version>${commons.lang}</version>
-	</dependency>
- -->
 <!-- ================== -->
 <!-- LOGGING START      -->
 <!-- ==================--> 
@@ -151,19 +138,6 @@
     	<artifactId>slf4j-api</artifactId>
     	<version>${slf4j.version}</version>
 	</dependency>
-
-<!--	
-  	<dependency>
-    	<groupId>org.slf4j</groupId>
-    	<artifactId>slf4j-ext</artifactId>
-    	<version>${slf4j.version}</version>
-	</dependency>
-  	<dependency>
-    	<groupId>org.slf4j</groupId>
-    	<artifactId>slf4j-log4j12</artifactId>
-    	<version>${slf4j.version}</version>
-	</dependency>
- -->	
 
 	<dependency>
 	  <groupId>org.apache.logging.log4j</groupId>
@@ -176,31 +150,8 @@
 	  <version>${log4j2.version}</version>
 	</dependency>
 
-<!-- ========JSR 250 API========== --> 
-
-	<dependency>
-		<groupId>javax.annotation</groupId>
-		<artifactId>jsr250-api</artifactId>
-		<version>${javax.annotation.version}</version>
-	</dependency>
-	
-<!-- ================== -->
-<!-- RESTEASY START     -->
-<!-- ================== --> 
-<!-- 
-	<dependency>
-		<groupId>org.jboss.resteasy</groupId>
-		<artifactId>resteasy-jaxrs</artifactId>
-		<version>${resteasy.version}</version>
-	</dependency>
- -->
-
-	<dependency>
-		<groupId>org.jboss.resteasy</groupId>
-		<artifactId>resteasy-client</artifactId>
-	  <version>${resteasy.version}</version> 
-	</dependency>
 </dependencies>
+
 <repositories>
         <repository>
         	<id>Local</id>

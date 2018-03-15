@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="_OzsbsMu3EeOdIoWZ6R3itw" targetNamespace="http://camunda.org/schema/1.0/bpmn" exporter="Camunda Modeler" exporterVersion="1.10.0" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="_OzsbsMu3EeOdIoWZ6R3itw" targetNamespace="http://camunda.org/schema/1.0/bpmn" exporter="Camunda Modeler" exporterVersion="1.11.3" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <bpmn2:collaboration id="_Collaboration_3">
-    <bpmn2:participant id="_Customer" name="Customer" processRef="com.camsolute.code.camp.models.business.OrderProcess">
+    <bpmn2:participant id="_Customer" name="Customer" processRef="process.name.Order.Customer">
       <bpmn2:documentation>This is the customer side of the ordermanagement prcess</bpmn2:documentation>
     </bpmn2:participant>
-    <bpmn2:participant id="_Production_Manager" name="Production Manager" processRef="com.camsolute.code.camp.models.business.ProductionProcess" />
-    <bpmn2:participant id="_Customer_Manager" name="Customer Manager" processRef="com.camsolute.code.camp.models.business.ManagementProcess" />
+    <bpmn2:participant id="_Production_Manager" name="Production Manager" processRef="process.name.Production" />
+    <bpmn2:participant id="_Customer_Manager" name="Customer Manager" processRef="process.name.Order.Customer.ManagementProcess" />
     <bpmn2:messageFlow id="MessageFlow_4" name="Order Production Completed" sourceRef="SendTask_OrderShippedMessage" targetRef="_Customer" />
     <bpmn2:messageFlow id="MessageFlow_5" name="Order Submitted" sourceRef="SendTask_SendOrderSubmittedMessage" targetRef="_Customer_Manager" />
     <bpmn2:messageFlow id="MessageFlow_1" name="" sourceRef="SendTask_OrderRejected" targetRef="_Customer" />
@@ -14,21 +14,21 @@
     <bpmn2:messageFlow id="MessageFlow_6" name="" sourceRef="SendTask_SendOrderUpdatedMessage" targetRef="_Production_Manager" />
     <bpmn2:messageFlow id="MessageFlow_7" name="" sourceRef="SendTask_SendOrderUpdatedMessage" targetRef="_Customer_Manager" />
   </bpmn2:collaboration>
-  <bpmn2:message id="opp_ordershipped" name="opp_ordershipped" />
+  <bpmn2:message id="opp_ordershipped" name="prpm_order_shipped" />
   <bpmn2:message id="cop_ordersubmittedcolab" name="ordersubmittedcolab" />
   <bpmn2:message id="cop_ordershippedcolab" name="ordershippedcolab" />
-  <bpmn2:message id="cop_ordercancelled" name="cop_ordercancelled" />
-  <bpmn2:message id="cop_orderupdated" name="cop_orderupdated" />
+  <bpmn2:message id="cop_ordercancelled" name="opm_order_cancelled" />
+  <bpmn2:message id="cop_orderupdated" name="opm_order_updated" />
   <bpmn2:message id="cop_orderstatuschanged" name="orderstatuschanged" />
-  <bpmn2:message id="cmp_orderrejected" name="cmp_orderrejected" />
-  <bpmn2:process id="com.camsolute.code.camp.models.business.OrderProcess" name="customer_order_process" isExecutable="true">
+  <bpmn2:message id="cmp_orderrejected" name="opm_order_rejected" />
+  <bpmn2:process id="process.name.Order.Customer" name="customer_order_process" isExecutable="true">
     <bpmn2:dataObject id="DataObject_1" name="Order" />
     <bpmn2:startEvent id="startEvent" name="Order &#10;Received">
       <bpmn2:extensionElements>
         <camunda:formData>
-          <camunda:formField id="orderNumber" label="Order Number" type="string" />
-          <camunda:formField id="orderId" label="Order ID" type="string" />
-          <camunda:formField id="orderStatus" label="Order Status" type="enum" defaultValue="CREATED">
+          <camunda:formField id="objectBusinessId" label="Business Id" type="string" />
+          <camunda:formField id="objectId" label="Object Id" type="string" />
+          <camunda:formField id="objectStatus" label="Object Status" type="enum" defaultValue="CREATED">
             <camunda:value id="CREATED" name="Order created" />
           </camunda:formField>
         </camunda:formData>
@@ -38,7 +38,7 @@
     <bpmn2:userTask id="submit_order" name="Submit Order" camunda:assignee="chris">
       <bpmn2:extensionElements>
         <camunda:formData>
-          <camunda:formField id="orderStatus" label="Submit Order" type="enum">
+          <camunda:formField id="objectStatus" label="Submit Order" type="enum">
             <camunda:value id="SUBMITTED" name="Order Submitted" />
           </camunda:formField>
         </camunda:formData>
@@ -49,54 +49,34 @@
       <bpmn2:outgoing>SequenceFlow_9</bpmn2:outgoing>
     </bpmn2:userTask>
     <bpmn2:sequenceFlow id="SequenceFlow_1" name="" sourceRef="startEvent" targetRef="ServiceTask_RegisterCustomerOrderProcess" />
-    <bpmn2:sendTask id="SendTask_SendOrderSubmittedMessage" name="Send Message" camunda:class="com.camsolute.code.camp.modules.pe.camunda.delegates.OrderMessengerDelegate">
+    <bpmn2:sendTask id="SendTask_SendOrderSubmittedMessage" name="Send Message" camunda:class="com.camsolute.code.camp.engine.camunda.delegates.OrderMessengerDelegate">
       <bpmn2:extensionElements>
-        <camunda:field name="messageName">        <camunda:string>cop_ordersubmitted</camunda:string>
-</camunda:field>
-        <camunda:field name="businessKey">        <camunda:string>${businessKey}</camunda:string>
-</camunda:field>
-        <camunda:field name="processName">        <camunda:string>customer_order_process</camunda:string>
-</camunda:field>
+        <camunda:field name="messageName">
+          <camunda:string>opm_order_submitted</camunda:string>
+        </camunda:field>
+        <camunda:field name="businessKey">
+          <camunda:string>${businessKey}</camunda:string>
+        </camunda:field>
+        <camunda:field name="processName">
+          <camunda:string>customer_order_process</camunda:string>
+        </camunda:field>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_9</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_13</bpmn2:outgoing>
     </bpmn2:sendTask>
     <bpmn2:sequenceFlow id="SequenceFlow_9" name="" sourceRef="submit_order" targetRef="SendTask_SendOrderSubmittedMessage" />
     <bpmn2:sequenceFlow id="SequenceFlow_13" name="" sourceRef="SendTask_SendOrderSubmittedMessage" targetRef="UserTask_PerformUpdate" />
-    <bpmn2:sendTask id="SendTask_SendOrderCancelledMessage" name="Order Cancelled" camunda:class="com.camsolute.code.camp.modules.pe.camunda.delegates.OrderMessengerDelegate">
-      <bpmn2:extensionElements>
-        <camunda:field name="messageName">        <camunda:string>cop_ordercancelled</camunda:string>
-</camunda:field>
-        <camunda:field name="businessKey">        <camunda:string>${businessKey}</camunda:string>
-</camunda:field>
-        <camunda:field name="processName">        <camunda:string>customer_order_process</camunda:string>
-</camunda:field>
-      </bpmn2:extensionElements>
-      <bpmn2:incoming>SequenceFlow_20</bpmn2:incoming>
-      <bpmn2:outgoing>SequenceFlow_31</bpmn2:outgoing>
-    </bpmn2:sendTask>
     <bpmn2:sequenceFlow id="SequenceFlow_31" name="" sourceRef="SendTask_SendOrderCancelledMessage" targetRef="ServiceTask_UnregisterCustomerOrderProcess2" />
-    <bpmn2:userTask id="UserTask_ConfirmFulfillment" name="Confirm Fulfillment" camunda:assignee="chris">
-      <bpmn2:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="orderStatus" label="Order Fulfilled" type="enum">
-            <camunda:value id="FULFILLED" name="Order Fulfilled" />
-          </camunda:formField>
-        </camunda:formData>
-      </bpmn2:extensionElements>
-      <bpmn2:incoming>SequenceFlow_7</bpmn2:incoming>
-      <bpmn2:outgoing>SequenceFlow_8</bpmn2:outgoing>
-    </bpmn2:userTask>
-    <bpmn2:sequenceFlow id="SequenceFlow_8" sourceRef="UserTask_ConfirmFulfillment" targetRef="ServiceTask_UnregisterCustomerOrderProcess2" />
+    <bpmn2:sequenceFlow id="SequenceFlow_8" sourceRef="UserTask_ConfirmFulfillment" targetRef="SendTask_SendOrderFulfilledMessage" />
     <bpmn2:sequenceFlow id="SequenceFlow_7" name="" sourceRef="BoundaryEvent_7" targetRef="UserTask_ConfirmFulfillment" />
     <bpmn2:sequenceFlow id="SequenceFlow_20" name="" sourceRef="ExclusiveGateway_2" targetRef="SendTask_SendOrderCancelledMessage">
-      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression"><![CDATA[${orderStatus == "CANCELLED"}]]></bpmn2:conditionExpression>
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression"><![CDATA[${objectStatus == "CANCELLED"}]]></bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:sequenceFlow id="SequenceFlow_21" name="" sourceRef="BoundaryEvent_6" targetRef="submit_order" />
     <bpmn2:userTask id="UserTask_PerformUpdate" name="Perform Update" camunda:assignee="chris">
       <bpmn2:extensionElements>
         <camunda:formData>
-          <camunda:formField id="orderStatus" label="Submit Order" type="enum">
+          <camunda:formField id="objectStatus" label="Submit Order" type="enum">
             <camunda:value id="UPDATED" name="Order Updated" />
             <camunda:value id="CANCELLED" name="Order Cancelled" />
           </camunda:formField>
@@ -106,14 +86,17 @@
       <bpmn2:incoming>SequenceFlow_40</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_45</bpmn2:outgoing>
     </bpmn2:userTask>
-    <bpmn2:sendTask id="SendTask_SendOrderUpdatedMessage" name="Order Updated" camunda:class="com.camsolute.code.camp.modules.pe.camunda.delegates.OrderMessengerDelegate">
+    <bpmn2:sendTask id="SendTask_SendOrderUpdatedMessage" name="Order Updated" camunda:class="com.camsolute.code.camp.engine.camunda.delegates.OrderMessengerDelegate">
       <bpmn2:extensionElements>
-        <camunda:field name="messageName">        <camunda:string>cop_orderupdated</camunda:string>
-</camunda:field>
-        <camunda:field name="businessKey">        <camunda:string>${businessKey}</camunda:string>
-</camunda:field>
-        <camunda:field name="processName">        <camunda:string>customer_order_process</camunda:string>
-</camunda:field>
+        <camunda:field name="messageName">
+          <camunda:string>opm_order_updated</camunda:string>
+        </camunda:field>
+        <camunda:field name="businessKey">
+          <camunda:string>${businessKey}</camunda:string>
+        </camunda:field>
+        <camunda:field name="processName">
+          <camunda:string>customer_order_process</camunda:string>
+        </camunda:field>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_39</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_40</bpmn2:outgoing>
@@ -125,7 +108,7 @@
       <bpmn2:outgoing>SequenceFlow_39</bpmn2:outgoing>
     </bpmn2:exclusiveGateway>
     <bpmn2:sequenceFlow id="SequenceFlow_39" sourceRef="ExclusiveGateway_2" targetRef="SendTask_SendOrderUpdatedMessage">
-      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression"><![CDATA[${orderStatus != "CANCELLED"}]]></bpmn2:conditionExpression>
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression"><![CDATA[${objectStatus != "CANCELLED"}]]></bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:boundaryEvent id="BoundaryEvent_6" name="Order&#10;Rejected" attachedToRef="UserTask_PerformUpdate">
       <bpmn2:outgoing>SequenceFlow_21</bpmn2:outgoing>
@@ -135,12 +118,14 @@
       <bpmn2:outgoing>SequenceFlow_7</bpmn2:outgoing>
       <bpmn2:messageEventDefinition id="_MessageEventDefinition_11" messageRef="opp_ordershipped" />
     </bpmn2:boundaryEvent>
-    <bpmn2:serviceTask id="ServiceTask_UpdateOrder8" name="Update Order" camunda:class="com.camsolute.code.camp.modules.pe.camunda.delegates.OrderUpdateDelegate">
+    <bpmn2:serviceTask id="ServiceTask_UpdateOrder8" name="Update Order" camunda:class="com.camsolute.code.camp.engine.camunda.delegates.OrderUpdateDelegate">
       <bpmn2:extensionElements>
-        <camunda:field name="targetStatus">        <camunda:expression>${orderStatus}</camunda:expression>
-</camunda:field>
-        <camunda:field name="processName">        <camunda:string>customer_order_process</camunda:string>
-</camunda:field>
+        <camunda:field name="targetStatus">
+          <camunda:expression>${objectStatus}</camunda:expression>
+        </camunda:field>
+        <camunda:field name="processName">
+          <camunda:string>customer_order_process</camunda:string>
+        </camunda:field>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_45</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_46</bpmn2:outgoing>
@@ -148,35 +133,79 @@
     <bpmn2:sequenceFlow id="SequenceFlow_45" name="" sourceRef="UserTask_PerformUpdate" targetRef="ServiceTask_UpdateOrder8" />
     <bpmn2:sequenceFlow id="SequenceFlow_46" name="" sourceRef="ServiceTask_UpdateOrder8" targetRef="ExclusiveGateway_2" />
     <bpmn2:sequenceFlow id="SequenceFlow_02drjpl" sourceRef="ServiceTask_RegisterCustomerOrderProcess" targetRef="submit_order" />
-    <bpmn2:serviceTask id="ServiceTask_RegisterCustomerOrderProcess" name="Register Customer Order Process" camunda:class="com.camsolute.code.camp.modules.pe.camunda.delegates.RegisterCustomerProcessDelegate">
+    <bpmn2:serviceTask id="ServiceTask_RegisterCustomerOrderProcess" name="Register Customer Order Process" camunda:class="com.camsolute.code.camp.engine.camunda.delegates.RegisterCustomerProcessDelegate">
       <bpmn2:extensionElements>
-        <camunda:field name="processName">        <camunda:string>customer_order_process</camunda:string>
-</camunda:field>
+        <camunda:field name="processName">
+          <camunda:string>customer_order_process</camunda:string>
+        </camunda:field>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_02drjpl</bpmn2:outgoing>
     </bpmn2:serviceTask>
-    <bpmn2:serviceTask id="ServiceTask_UnregisterCustomerOrderProcess2" name="Unregister Customer Order Process" camunda:class="com.camsolute.code.camp.modules.pe.camunda.delegates.UnregisterCustomerProcessDelegate">
+    <bpmn2:serviceTask id="ServiceTask_UnregisterCustomerOrderProcess2" name="Unregister Customer Order Process" camunda:class="com.camsolute.code.camp.engine.camunda.delegates.UnregisterCustomerProcessDelegate">
       <bpmn2:extensionElements>
-        <camunda:field name="processName">        <camunda:string>customer_order_process</camunda:string>
-</camunda:field>
+        <camunda:field name="processName">
+          <camunda:string>customer_order_process</camunda:string>
+        </camunda:field>
       </bpmn2:extensionElements>
-      <bpmn2:incoming>SequenceFlow_8</bpmn2:incoming>
       <bpmn2:incoming>SequenceFlow_31</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_00ap02z</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_03x20st</bpmn2:outgoing>
     </bpmn2:serviceTask>
     <bpmn2:sequenceFlow id="SequenceFlow_03x20st" sourceRef="ServiceTask_UnregisterCustomerOrderProcess2" targetRef="EndEvent_1" />
     <bpmn2:endEvent id="EndEvent_1">
       <bpmn2:incoming>SequenceFlow_03x20st</bpmn2:incoming>
     </bpmn2:endEvent>
+    <bpmn2:sendTask id="SendTask_SendOrderCancelledMessage" name="Order Cancelled" camunda:class="com.camsolute.code.camp.engine.camunda.delegates.OrderMessengerDelegate">
+      <bpmn2:extensionElements>
+        <camunda:field name="messageName">
+          <camunda:string>opm_order_cancelled</camunda:string>
+        </camunda:field>
+        <camunda:field name="businessKey">
+          <camunda:string>${businessKey}</camunda:string>
+        </camunda:field>
+        <camunda:field name="processName">
+          <camunda:string>customer_order_process</camunda:string>
+        </camunda:field>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_20</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_31</bpmn2:outgoing>
+    </bpmn2:sendTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_00ap02z" sourceRef="SendTask_SendOrderFulfilledMessage" targetRef="ServiceTask_UnregisterCustomerOrderProcess2" />
+    <bpmn2:sendTask id="SendTask_SendOrderFulfilledMessage" name="Order Fulfilled" camunda:class="com.camsolute.code.camp.engine.camunda.delegates.OrderMessengerDelegate">
+      <bpmn2:extensionElements>
+        <camunda:field name="messageName">
+          <camunda:string>opm_order_fulfilled</camunda:string>
+        </camunda:field>
+        <camunda:field name="businessKey">
+          <camunda:string>${businessKey}</camunda:string>
+        </camunda:field>
+        <camunda:field name="processName">
+          <camunda:string>customer_order_process</camunda:string>
+        </camunda:field>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_8</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_00ap02z</bpmn2:outgoing>
+    </bpmn2:sendTask>
+    <bpmn2:userTask id="UserTask_ConfirmFulfillment" name="Confirm Fulfillment" camunda:assignee="chris">
+      <bpmn2:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="objectStatus" label="Order Fulfilled" type="enum">
+            <camunda:value id="FULFILLED" name="Order Fulfilled" />
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_7</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_8</bpmn2:outgoing>
+    </bpmn2:userTask>
   </bpmn2:process>
-  <bpmn2:process id="com.camsolute.code.camp.models.business.ProductionProcess" name="production_process" isExecutable="true">
+  <bpmn2:process id="process.name.Production" name="production_process" isExecutable="true">
     <bpmn2:startEvent id="StartEvent_Constructor" name="Order &#10;Released">
       <bpmn2:extensionElements>
         <camunda:formData>
-          <camunda:formField id="orderNumber" label="Order Number" type="string" />
-          <camunda:formField id="orderId" label="Order ID" type="string" />
-          <camunda:formField id="orderStatus" label="Order Status" type="enum" defaultValue="PRODUCTION">
+          <camunda:formField id="objectBusinessId" label="Order Number" type="string" />
+          <camunda:formField id="objectId" label="Order ID" type="string" />
+          <camunda:formField id="objectStatus" label="Order Status" type="enum" defaultValue="PRODUCTION">
             <camunda:value id="PRODUCTION" name="Order in Production" />
           </camunda:formField>
         </camunda:formData>
@@ -187,7 +216,7 @@
     <bpmn2:userTask id="UserTask_CompleteOrder" name="Complete Order" camunda:assignee="chris">
       <bpmn2:extensionElements>
         <camunda:formData>
-          <camunda:formField id="orderStatus" label="Ship Product" type="enum">
+          <camunda:formField id="objectStatus" label="Ship Product" type="enum">
             <camunda:value id="SHIPPING" name="Order Shipping" />
           </camunda:formField>
         </camunda:formData>
@@ -196,34 +225,41 @@
       <bpmn2:incoming>SequenceFlow_44</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_12</bpmn2:outgoing>
     </bpmn2:userTask>
-    <bpmn2:serviceTask id="ServiceTask_UpdateOrder1" name="UpdateOrder" camunda:class="com.camsolute.code.camp.modules.pe.camunda.delegates.OrderUpdateDelegate">
+    <bpmn2:serviceTask id="ServiceTask_UpdateOrder1" name="UpdateOrder" camunda:class="com.camsolute.code.camp.engine.camunda.delegates.OrderUpdateDelegate">
       <bpmn2:extensionElements>
-        <camunda:field name="targetStatus">        <camunda:expression>${orderStatus}</camunda:expression>
-</camunda:field>
-        <camunda:field name="processName">        <camunda:string>production_process</camunda:string>
-</camunda:field>
+        <camunda:field name="targetStatus">
+          <camunda:expression>${objectStatus}</camunda:expression>
+        </camunda:field>
+        <camunda:field name="processName">
+          <camunda:string>production_process</camunda:string>
+        </camunda:field>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_12</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_11</bpmn2:outgoing>
     </bpmn2:serviceTask>
     <bpmn2:sendTask id="SendTask_OrderShippedMessage" name="Order Shipped Message" camunda:class="com.camsolute.code.camp.modules.pe.camunda.delegates.OrderMessengerDelegate">
       <bpmn2:extensionElements>
-        <camunda:field name="messageName">        <camunda:string>opp_ordershipped</camunda:string>
-</camunda:field>
-        <camunda:field name="businessKey">        <camunda:string>${businessKey}</camunda:string>
-</camunda:field>
-        <camunda:field name="processName">        <camunda:string>production_process</camunda:string>
-</camunda:field>
+        <camunda:field name="messageName">
+          <camunda:string>prpm_order_shipped</camunda:string>
+        </camunda:field>
+        <camunda:field name="businessKey">
+          <camunda:string>${businessKey}</camunda:string>
+        </camunda:field>
+        <camunda:field name="processName">
+          <camunda:string>production_process</camunda:string>
+        </camunda:field>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_11</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
     </bpmn2:sendTask>
-    <bpmn2:serviceTask id="ServiceTask_RegisterProductionProcess" name="Register Production Process" camunda:class="com.camsolute.code.camp.modules.pe.camunda.delegates.RegisterProductionProcessDelegate">
+    <bpmn2:serviceTask id="ServiceTask_RegisterProductionProcess" name="Register Production Process" camunda:class="com.camsolute.code.camp.engine.camunda.delegates.RegisterProductionProcessDelegate">
       <bpmn2:extensionElements>
-        <camunda:field name="processName">        <camunda:string>production_process</camunda:string>
-</camunda:field>
-        <camunda:field name="targetStatus">        <camunda:string>${orderStatus}</camunda:string>
-</camunda:field>
+        <camunda:field name="processName">
+          <camunda:string>production_process</camunda:string>
+        </camunda:field>
+        <camunda:field name="targetStatus">
+          <camunda:string>${objectStatus}</camunda:string>
+        </camunda:field>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_14</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_15</bpmn2:outgoing>
@@ -231,7 +267,7 @@
     <bpmn2:userTask id="UserTask_ConfirmUpdate" name="Confirm Update" camunda:assignee="chris">
       <bpmn2:extensionElements>
         <camunda:formData>
-          <camunda:formField id="orderStatus" label="Order Status" type="enum">
+          <camunda:formField id="objectStatus" label="Order Status" type="enum">
             <camunda:value id="PRODUCTION" name="Released to Production" />
           </camunda:formField>
         </camunda:formData>
@@ -244,8 +280,9 @@
     </bpmn2:endEvent>
     <bpmn2:serviceTask id="ServiceTask_UnregisterProductionProcess1" name="Unregister Production Process" camunda:class="com.camsolute.code.camp.modules.pe.camunda.delegates.UnregisterProductionProcessDelegate">
       <bpmn2:extensionElements>
-        <camunda:field name="processName">        <camunda:string>production_process</camunda:string>
-</camunda:field>
+        <camunda:field name="processName">
+          <camunda:string>production_process</camunda:string>
+        </camunda:field>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_6</bpmn2:incoming>
       <bpmn2:incoming>SequenceFlow_4</bpmn2:incoming>
@@ -269,12 +306,12 @@
     <bpmn2:sequenceFlow id="SequenceFlow_1cclgoz" sourceRef="ServiceTask_UnregisterProductionProcess1" targetRef="EndEvent_2" />
     <bpmn2:sequenceFlow id="SequenceFlow_6" name="" sourceRef="BoundaryEvent_2" targetRef="ServiceTask_UnregisterProductionProcess1" />
   </bpmn2:process>
-  <bpmn2:process id="com.camsolute.code.camp.models.business.ManagementProcess" name="customer_order_management_process" isExecutable="true">
+  <bpmn2:process id="process.name.Order.Customer.ManagementProcess" name="customer_order_management_process" isExecutable="true">
     <bpmn2:sequenceFlow id="SequenceFlow_23" name="" sourceRef="ExclusiveGateway_1" targetRef="SendTask_OrderReleasedToProduction">
-      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression"><![CDATA[${orderStatus == "PRODUCTION"}]]></bpmn2:conditionExpression>
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression"><![CDATA[${objectStatus == "PRODUCTION"}]]></bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:sequenceFlow id="SequenceFlow_17" name="" sourceRef="ExclusiveGateway_1" targetRef="SendTask_OrderRejected">
-      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression"><![CDATA[${orderStatus == "REJECTED"}]]></bpmn2:conditionExpression>
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression"><![CDATA[${objectStatus == "REJECTED"}]]></bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:sequenceFlow id="SequenceFlow_18" name="" sourceRef="ServiceTask_UpdateOrder" targetRef="ExclusiveGateway_1" />
     <bpmn2:sequenceFlow id="SequenceFlow_10" name="" sourceRef="UserTask_CheckOrder" targetRef="ServiceTask_UpdateOrder" />
@@ -283,36 +320,44 @@
     <bpmn2:endEvent id="EndEvent_4">
       <bpmn2:incoming>SequenceFlow_11d40md</bpmn2:incoming>
     </bpmn2:endEvent>
-    <bpmn2:sendTask id="SendTask_OrderReleasedToProduction" name="Order Released to Production" camunda:class="com.camsolute.code.camp.modules.pe.camunda.delegates.OrderMessengerDelegate">
+    <bpmn2:sendTask id="SendTask_OrderReleasedToProduction" name="Order Released to Production" camunda:class="com.camsolute.code.camp.engine.camunda.delegates.OrderMessengerDelegate">
       <bpmn2:extensionElements>
-        <camunda:field name="messageName">        <camunda:string>cmp_orderreleased</camunda:string>
-</camunda:field>
-        <camunda:field name="businessKey">        <camunda:string>${businessKey}</camunda:string>
-</camunda:field>
-        <camunda:field name="processName">        <camunda:string>customer_order_management_process</camunda:string>
-</camunda:field>
+        <camunda:field name="messageName">
+          <camunda:string>mgtpm_order_released</camunda:string>
+        </camunda:field>
+        <camunda:field name="businessKey">
+          <camunda:string>${businessKey}</camunda:string>
+        </camunda:field>
+        <camunda:field name="processName">
+          <camunda:string>customer_order_management_process</camunda:string>
+        </camunda:field>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_23</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_16</bpmn2:outgoing>
     </bpmn2:sendTask>
     <bpmn2:sendTask id="SendTask_OrderRejected" name="Order Rejected" camunda:class="com.camsolute.code.camp.modules.pe.camunda.delegates.OrderMessengerDelegate">
       <bpmn2:extensionElements>
-        <camunda:field name="messageName">        <camunda:string>cmp_orderrejected</camunda:string>
-</camunda:field>
-        <camunda:field name="businessKey">        <camunda:string>${businessKey}</camunda:string>
-</camunda:field>
-        <camunda:field name="processName">        <camunda:string>customer_order_management_process</camunda:string>
-</camunda:field>
+        <camunda:field name="messageName">
+          <camunda:string>mgtpm__order_rejected</camunda:string>
+        </camunda:field>
+        <camunda:field name="businessKey">
+          <camunda:string>${businessKey}</camunda:string>
+        </camunda:field>
+        <camunda:field name="processName">
+          <camunda:string>customer_order_management_process</camunda:string>
+        </camunda:field>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_17</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_29</bpmn2:outgoing>
     </bpmn2:sendTask>
-    <bpmn2:serviceTask id="ServiceTask_UpdateOrder" name="Update Order" camunda:class="com.camsolute.code.camp.modules.pe.camunda.delegates.OrderUpdateDelegate">
+    <bpmn2:serviceTask id="ServiceTask_UpdateOrder" name="Update Order" camunda:class="com.camsolute.code.camp.engine.camunda.delegates.OrderUpdateDelegate">
       <bpmn2:extensionElements>
-        <camunda:field name="targetStatus">        <camunda:expression>${orderStatus}</camunda:expression>
-</camunda:field>
-        <camunda:field name="processName">        <camunda:string>customer_order_management_process</camunda:string>
-</camunda:field>
+        <camunda:field name="targetStatus">
+          <camunda:expression>${objectStatus}</camunda:expression>
+        </camunda:field>
+        <camunda:field name="processName">
+          <camunda:string>customer_order_management_process</camunda:string>
+        </camunda:field>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_10</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_18</bpmn2:outgoing>
@@ -325,7 +370,7 @@
     <bpmn2:userTask id="UserTask_CheckOrder" name="Check Order" camunda:assignee="chris">
       <bpmn2:extensionElements>
         <camunda:formData>
-          <camunda:formField id="orderStatus" label="Order Status" type="enum">
+          <camunda:formField id="objectStatus" label="Order Status" type="enum">
             <camunda:value id="PRODUCTION" name="Released to Production" />
             <camunda:value id="REJECTED" name="Order Rejected" />
           </camunda:formField>
@@ -334,12 +379,14 @@
       <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_10</bpmn2:outgoing>
     </bpmn2:userTask>
-    <bpmn2:serviceTask id="ServiceTask_RegisterCustomerOrderManagementProcess" name="Register Customer Order Management Process" camunda:class="com.camsolute.code.camp.modules.pe.camunda.delegates.RegisterOrderProcessDelegate">
+    <bpmn2:serviceTask id="ServiceTask_RegisterCustomerOrderManagementProcess" name="Register Customer Order Management Process" camunda:class="com.camsolute.code.camp.engine.camunda.delegates.RegisterOrderProcessDelegate">
       <bpmn2:extensionElements>
-        <camunda:field name="processName">        <camunda:string>customer_order_management_process</camunda:string>
-</camunda:field>
-        <camunda:field name="targetStatus">        <camunda:string>${orderStatus}</camunda:string>
-</camunda:field>
+        <camunda:field name="processName">
+          <camunda:string>customer_order_management_process</camunda:string>
+        </camunda:field>
+        <camunda:field name="targetStatus">
+          <camunda:string>${objectStatus}</camunda:string>
+        </camunda:field>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_3</bpmn2:outgoing>
@@ -347,9 +394,9 @@
     <bpmn2:startEvent id="StartEvent_1" name="Order Submitted" camunda:formKey="Camp_Start_Customer_Order">
       <bpmn2:extensionElements>
         <camunda:formData>
-          <camunda:formField id="orderNumber" label="Order Number" type="string" />
-          <camunda:formField id="orderId" label="Order ID" type="string" />
-          <camunda:formField id="orderStatus" label="Order Status" type="enum" defaultValue="SUBMITTED">
+          <camunda:formField id="objectBusinessId" label="Order Number" type="string" />
+          <camunda:formField id="objectId" label="Order ID" type="string" />
+          <camunda:formField id="objectStatus" label="Order Status" type="enum" defaultValue="SUBMITTED">
             <camunda:value id="SUBMITTED" name="Order Submitted" />
           </camunda:formField>
         </camunda:formData>
@@ -362,8 +409,9 @@
     <bpmn2:sequenceFlow id="SequenceFlow_16" name="" sourceRef="SendTask_OrderReleasedToProduction" targetRef="ServiceTask_UnregisterCustomerOrderManagementProcess" />
     <bpmn2:serviceTask id="ServiceTask_UnregisterCustomerOrderManagementProcess" name="Unregister Customer Order Management Process" camunda:class="com.camsolute.code.camp.modules.pe.camunda.delegates.UnregisterOrderProcessDelegate">
       <bpmn2:extensionElements>
-        <camunda:field name="processName">        <camunda:string>customer_order_management_process</camunda:string>
-</camunda:field>
+        <camunda:field name="processName">
+          <camunda:string>customer_order_management_process</camunda:string>
+        </camunda:field>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_29</bpmn2:incoming>
       <bpmn2:incoming>SequenceFlow_16</bpmn2:incoming>
@@ -372,8 +420,8 @@
   </bpmn2:process>
   <bpmn2:signal id="Signal_1" name="cop_orderupdated" />
   <bpmn2:signal id="Signal_2" name="cop_ordercancelled" />
-  <bpmn2:message id="Message_1" name="cmp_orderreleased" />
-  <bpmn2:message id="Message_2" name="cop_ordersubmitted" />
+  <bpmn2:message id="Message_1" name="mgtpm_order_released" />
+  <bpmn2:message id="Message_2" name="opm_order_submitted" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="_Collaboration_3">
       <bpmndi:BPMNShape id="_BPMNShape_Participant_5" bpmnElement="_Customer" isHorizontal="true">
@@ -396,7 +444,7 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_UserTask_4" bpmnElement="UserTask_ConfirmFulfillment">
-        <dc:Bounds x="1189" y="967" width="100" height="80" />
+        <dc:Bounds x="968" y="967" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_EndEvent_2" bpmnElement="EndEvent_1">
         <dc:Bounds x="1622" y="857" width="36" height="36" />
@@ -404,13 +452,11 @@
           <dc:Bounds x="1595" y="898" width="90" height="0" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_8" bpmnElement="SequenceFlow_8" sourceElement="_BPMNShape_UserTask_4" targetElement="Task_1h896hv_di">
-        <di:waypoint xsi:type="dc:Point" x="1289" y="1007" />
-        <di:waypoint xsi:type="dc:Point" x="1356" y="1007" />
-        <di:waypoint xsi:type="dc:Point" x="1356" y="875" />
-        <di:waypoint xsi:type="dc:Point" x="1447" y="875" />
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_8" bpmnElement="SequenceFlow_8" sourceElement="_BPMNShape_UserTask_4" targetElement="SendTask_0lot97j_di">
+        <di:waypoint xsi:type="dc:Point" x="1068" y="1007" />
+        <di:waypoint xsi:type="dc:Point" x="1189" y="1007" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1326" y="941" width="90" height="0" />
+          <dc:Bounds x="1083.5" y="992" width="90" height="0" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_Participant_6" bpmnElement="_Production_Manager" isHorizontal="true">
@@ -618,16 +664,16 @@
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_7" bpmnElement="SequenceFlow_7" sourceElement="_BPMNShape_BoundaryEvent_8" targetElement="_BPMNShape_UserTask_4">
         <di:waypoint xsi:type="dc:Point" x="933" y="937" />
         <di:waypoint xsi:type="dc:Point" x="933" y="1007" />
-        <di:waypoint xsi:type="dc:Point" x="1189" y="1007" />
+        <di:waypoint xsi:type="dc:Point" x="968" y="1007" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="930" y="951" width="6" height="6" />
+          <dc:Bounds x="903" y="969" width="90" height="6" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_20" bpmnElement="SequenceFlow_20" sourceElement="_BPMNShape_ExclusiveGateway_4" targetElement="_BPMNShape_SendTask_6">
         <di:waypoint xsi:type="dc:Point" x="1150" y="874" />
         <di:waypoint xsi:type="dc:Point" x="1184" y="875" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1173" y="875" width="6" height="6" />
+          <dc:Bounds x="1131" y="875" width="90" height="6" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_21" bpmnElement="SequenceFlow_21" sourceElement="_BPMNShape_BoundaryEvent_7" targetElement="_BPMNShape_UserTask_2">
@@ -682,7 +728,7 @@
         <di:waypoint xsi:type="dc:Point" x="1238" y="831" />
         <di:waypoint xsi:type="dc:Point" x="1238" y="334" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1208" y="579.5" width="90" height="6" />
+          <dc:Bounds x="1208" y="580" width="90" height="6" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_MessageFlow_6" bpmnElement="MessageFlow_6" sourceElement="_BPMNShape_SendTask_8" targetElement="_BPMNShape_Participant_6">
@@ -819,6 +865,18 @@
           <dc:Bounds x="1827" y="149" width="90" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_00ap02z_di" bpmnElement="SequenceFlow_00ap02z">
+        <di:waypoint xsi:type="dc:Point" x="1289" y="1007" />
+        <di:waypoint xsi:type="dc:Point" x="1356" y="1007" />
+        <di:waypoint xsi:type="dc:Point" x="1356" y="875" />
+        <di:waypoint xsi:type="dc:Point" x="1447" y="875" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1371" y="935" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="SendTask_0lot97j_di" bpmnElement="SendTask_SendOrderFulfilledMessage">
+        <dc:Bounds x="1189" y="967" width="100" height="80" />
+      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>

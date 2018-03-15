@@ -71,6 +71,9 @@ public class RegisterCustomerProcessDelegate implements JavaDelegate {
 		String processInstanceId = ((ExecutionEntity) execution).getProcessInstanceId();
 		if(_DEBUG){msg = "----[processInstanceId('"+processInstanceId+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		
+		String executionId = ((ExecutionEntity) execution).getId();
+		if(_DEBUG){msg = "----[executionId('"+executionId+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		
 		String businessKey = ((ExecutionEntity) execution).getBusinessKey();
 		if(_DEBUG){msg = "----[businessKey('"+businessKey+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		
@@ -88,8 +91,7 @@ public class RegisterCustomerProcessDelegate implements JavaDelegate {
 		
 		boolean ended = ((ExecutionEntity) execution).isEnded();
 		if(_DEBUG){msg = "----[ended('"+ended+"')]----";LOG.info(String.format(fmt, _f,msg));}
-		String executionId = ((ExecutionEntity) execution).getId();
-		
+
 		Process<Customer> process = new Process<Customer>(executionId, processInstanceId, businessKey, processName, definitionId,tenantId, caseInstanceId,ended,suspended,Process.ProcessType.customer_process);
 		
 		ProcessRest.instance().save(process, !Util._IN_PRODUCTION);
