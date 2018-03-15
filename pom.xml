@@ -111,37 +111,48 @@
 		<version>${joda.time.version}</version>
 	</dependency>
 <!-- ========HTTP CLIENT========== -->
+<!-- 
 	<dependency>
 		<groupId>org.apache.httpcomponents</groupId>
 		<artifactId>httpclient</artifactId>
 		<version>${http.components.client}</version>
 	</dependency>
+ -->	
 <!-- ========HTTP CORE========== -->
+<!-- 
 	<dependency>
 		<groupId>org.apache.httpcomponents</groupId>
 		<artifactId>httpcore</artifactId>
 		<version>${http.components.core}</version>
     </dependency>
+ -->    
 <!-- ========COMMONS LOGGING========== -->
+<!-- 
 	<dependency>
 	    <groupId>commons-logging</groupId>
 	    <artifactId>commons-logging</artifactId>
 	    <version>${commons.logging}</version>
 	</dependency>
+ -->
 <!-- ========COMMONS LANG3========== -->
+<!-- 
 	<dependency>
 	    <groupId>org.apache.commons</groupId>
 	    <artifactId>commons-lang3</artifactId>
 	    <version>${commons.lang}</version>
 	</dependency>
+ -->
 <!-- ================== -->
 <!-- LOGGING START      -->
 <!-- ==================--> 
+ 
  	<dependency>
     	<groupId>org.slf4j</groupId>
     	<artifactId>slf4j-api</artifactId>
     	<version>${slf4j.version}</version>
 	</dependency>
+
+<!--	
   	<dependency>
     	<groupId>org.slf4j</groupId>
     	<artifactId>slf4j-ext</artifactId>
@@ -152,7 +163,8 @@
     	<artifactId>slf4j-log4j12</artifactId>
     	<version>${slf4j.version}</version>
 	</dependency>
-	
+ -->	
+
 	<dependency>
 	  <groupId>org.apache.logging.log4j</groupId>
 	  <artifactId>log4j-core</artifactId>
@@ -163,7 +175,9 @@
 	  <artifactId>log4j-taglib</artifactId>
 	  <version>${log4j2.version}</version>
 	</dependency>
+
 <!-- ========JSR 250 API========== --> 
+
 	<dependency>
 		<groupId>javax.annotation</groupId>
 		<artifactId>jsr250-api</artifactId>
@@ -173,18 +187,20 @@
 <!-- ================== -->
 <!-- RESTEASY START     -->
 <!-- ================== --> 
+<!-- 
 	<dependency>
 		<groupId>org.jboss.resteasy</groupId>
 		<artifactId>resteasy-jaxrs</artifactId>
 		<version>${resteasy.version}</version>
 	</dependency>
+ -->
 
 	<dependency>
 		<groupId>org.jboss.resteasy</groupId>
 		<artifactId>resteasy-client</artifactId>
 	  <version>${resteasy.version}</version> 
 	</dependency>
-  </dependencies>
+</dependencies>
 <repositories>
         <repository>
         	<id>Local</id>
