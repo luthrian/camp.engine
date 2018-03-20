@@ -30,7 +30,7 @@
   
   <properties>
   	<!-- CAMSOLUTE START -->
-  	<camp.version>0.6.5</camp.version>
+  	<camp.version>0.7.0</camp.version>
 	<!-- JSON TRANSFORMATION START -->
     	<jsoup.version>1.10.3</jsoup.version>
 	<!-- JAVA START -->
