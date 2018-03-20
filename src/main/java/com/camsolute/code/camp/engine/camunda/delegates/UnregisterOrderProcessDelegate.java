@@ -36,7 +36,7 @@ import com.camsolute.code.camp.lib.models.order.Order;
 public class UnregisterOrderProcessDelegate implements JavaDelegate {
 	public static final String _F = "["+UnregisterOrderProcessDelegate.class.getSimpleName()+"]";
 	private static String fmt = "[%15s] [%s]";
-    private static final Logger LOG = LogManager.getLogger("RegisterOrderProcessDelegate");
+    private static final Logger LOG = LogManager.getLogger("UnregisterOrderProcessDelegate");
 	
     private Expression processName;
 
@@ -47,8 +47,8 @@ public class UnregisterOrderProcessDelegate implements JavaDelegate {
 		String _f = null;
 		String msg = null;
 		if(!Util._IN_PRODUCTION) {
-			_f = "[RegisterOrderProcessDelegate]";
-			msg = "====[ register object process ]====";LOG.traceEntry(String.format(fmt,(_f+">>>>>>>>>").toUpperCase(),msg));
+			_f = "[execute]";
+			msg = "====[ deregister object process ]====";LOG.traceEntry(String.format(fmt,(_f+">>>>>>>>>").toUpperCase(),msg));
 		}
 
 		String objectBusinessId = (String) execution.getVariable("objectBusinessId");

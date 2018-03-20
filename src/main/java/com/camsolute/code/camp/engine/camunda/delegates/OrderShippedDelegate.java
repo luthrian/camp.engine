@@ -68,6 +68,7 @@ public class OrderShippedDelegate implements JavaDelegate {
 			_f = "[_execute]";
 			msg = "====[ handling order update (shipped) event: updating status to '"+targetStatus+"']====";LOG.traceEntry(String.format(fmt,_f,msg));
 		}
+		String objectBusinessKey = (String) execution.getVariable("objectBusinessKey");
 		String objectBusinessId = (String) execution.getVariable("objectBusinessId");
 		String objectId = (String) execution.getVariable("objectId");
 		String objectStatus = (String) execution.getVariable("objectStatus");
@@ -77,6 +78,7 @@ public class OrderShippedDelegate implements JavaDelegate {
 		String activityId = ((ExecutionEntity) execution).getActivityId();
 		String processInstanceId = ((ExecutionEntity) execution).getProcessInstanceId();
 		
+		if(!Util._IN_PRODUCTION){msg = "----[objectBusinessKey '"+objectBusinessKey+"']----";LOG.info(String.format(fmt, _f,msg));}
 		if(!Util._IN_PRODUCTION){msg = "----[objectBusinessId '"+objectBusinessId+"']----";LOG.info(String.format(fmt, _f,msg));}
 		if(!Util._IN_PRODUCTION){msg = "----[objectId '"+objectId+"']----";LOG.info(String.format(fmt, _f,msg));}
 		if(!Util._IN_PRODUCTION){msg = "----[objectStatus '"+objectStatus+"']----";LOG.info(String.format(fmt, _f,msg));}

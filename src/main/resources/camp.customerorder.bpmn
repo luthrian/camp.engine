@@ -14,43 +14,12 @@
     <bpmn2:messageFlow id="MessageFlow_6" name="" sourceRef="SendTask_SendOrderUpdatedMessage" targetRef="_Production_Manager" />
     <bpmn2:messageFlow id="MessageFlow_7" name="" sourceRef="SendTask_SendOrderUpdatedMessage" targetRef="_Customer_Manager" />
   </bpmn2:collaboration>
-  <bpmn2:message id="opp_ordershipped" name="prpm_order_shipped" />
-  <bpmn2:message id="cop_ordersubmittedcolab" name="ordersubmittedcolab" />
-  <bpmn2:message id="cop_ordershippedcolab" name="ordershippedcolab" />
-  <bpmn2:message id="cop_ordercancelled" name="opm_order_cancelled" />
-  <bpmn2:message id="cop_orderupdated" name="opm_order_updated" />
-  <bpmn2:message id="cop_orderstatuschanged" name="orderstatuschanged" />
-  <bpmn2:message id="cmp_orderrejected" name="opm_order_rejected" />
+  <bpmn2:message id="prpm_order_shipped" name="prpm_order_shipped" />
+  <bpmn2:message id="opm_order_cancelled" name="opm_order_cancelled" />
+  <bpmn2:message id="opm_order_updated" name="opm_order_updated" />
+  <bpmn2:message id="mgtpm_order_rejected" name="mgtpm_order_rejected" />
   <bpmn2:process id="process.name.Order.Customer" name="customer_order_process" isExecutable="true">
     <bpmn2:dataObject id="DataObject_1" name="Order" />
-    <bpmn2:startEvent id="startEvent" name="Order &#10;Received">
-      <bpmn2:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="objectBusinessId" label="Business Id" type="string" />
-          <camunda:formField id="objectId" label="Object Id" type="string" />
-          <camunda:formField id="objectStatus" label="Object Status" type="enum" defaultValue="CREATED">
-            <camunda:value id="CREATED" name="Order created" />
-          </camunda:formField>
-          <camunda:formField id="objectType" label="Object Type" type="string" />
-          <camunda:formField id="objectPrincipal" label="Object Principal" type="string" />
-        </camunda:formData>
-      </bpmn2:extensionElements>
-      <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
-    </bpmn2:startEvent>
-    <bpmn2:userTask id="submit_order" name="Submit Order" camunda:assignee="chris">
-      <bpmn2:extensionElements>
-        <camunda:formData>
-          <camunda:formField id="objectStatus" label="Submit Order" type="enum">
-            <camunda:value id="SUBMITTED" name="Order Submitted" />
-          </camunda:formField>
-        </camunda:formData>
-        <camunda:taskListener class="com.camsolute.code.camp.engine.camunda.event.SendMessageTaskListener" event="complete" />
-      </bpmn2:extensionElements>
-      <bpmn2:incoming>SequenceFlow_21</bpmn2:incoming>
-      <bpmn2:incoming>SequenceFlow_02drjpl</bpmn2:incoming>
-      <bpmn2:outgoing>SequenceFlow_9</bpmn2:outgoing>
-    </bpmn2:userTask>
-    <bpmn2:sequenceFlow id="SequenceFlow_1" name="" sourceRef="startEvent" targetRef="ServiceTask_RegisterCustomerOrderProcess" />
     <bpmn2:sendTask id="SendTask_SendOrderSubmittedMessage" name="Send Message" camunda:class="com.camsolute.code.camp.engine.camunda.delegates.OrderMessengerDelegate">
       <bpmn2:extensionElements>
         <camunda:field name="messageName">
@@ -62,22 +31,13 @@
         <camunda:field name="processName">
           <camunda:string>customer_order_process</camunda:string>
         </camunda:field>
-        <camunda:field name="newStatus">
+        <camunda:field name="targetStatus">
           <camunda:string>SUBMITTED</camunda:string>
         </camunda:field>
       </bpmn2:extensionElements>
-      <bpmn2:incoming>SequenceFlow_9</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_1enxcpe</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_13</bpmn2:outgoing>
     </bpmn2:sendTask>
-    <bpmn2:sequenceFlow id="SequenceFlow_9" name="" sourceRef="submit_order" targetRef="SendTask_SendOrderSubmittedMessage" />
-    <bpmn2:sequenceFlow id="SequenceFlow_13" name="" sourceRef="SendTask_SendOrderSubmittedMessage" targetRef="UserTask_PerformUpdate" />
-    <bpmn2:sequenceFlow id="SequenceFlow_31" name="" sourceRef="SendTask_SendOrderCancelledMessage" targetRef="ServiceTask_UnregisterCustomerOrderProcess2" />
-    <bpmn2:sequenceFlow id="SequenceFlow_8" sourceRef="UserTask_ConfirmFulfillment" targetRef="SendTask_SendOrderFulfilledMessage" />
-    <bpmn2:sequenceFlow id="SequenceFlow_7" name="" sourceRef="BoundaryEvent_7" targetRef="UserTask_ConfirmFulfillment" />
-    <bpmn2:sequenceFlow id="SequenceFlow_20" name="" sourceRef="ExclusiveGateway_2" targetRef="SendTask_SendOrderCancelledMessage">
-      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression"><![CDATA[${objectStatus == "CANCELLED" && objectStatus == "PRODUCTION"}]]></bpmn2:conditionExpression>
-    </bpmn2:sequenceFlow>
-    <bpmn2:sequenceFlow id="SequenceFlow_21" name="" sourceRef="BoundaryEvent_6" targetRef="submit_order" />
     <bpmn2:userTask id="UserTask_PerformUpdate" name="Perform Update" camunda:assignee="chris">
       <bpmn2:extensionElements>
         <camunda:formData>
@@ -107,24 +67,12 @@
       <bpmn2:incoming>SequenceFlow_39</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_40</bpmn2:outgoing>
     </bpmn2:sendTask>
-    <bpmn2:sequenceFlow id="SequenceFlow_40" name="" sourceRef="SendTask_SendOrderUpdatedMessage" targetRef="UserTask_PerformUpdate" />
     <bpmn2:exclusiveGateway id="ExclusiveGateway_2">
       <bpmn2:incoming>SequenceFlow_46</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_20</bpmn2:outgoing>
       <bpmn2:outgoing>SequenceFlow_39</bpmn2:outgoing>
       <bpmn2:outgoing>SequenceFlow_17wnk7r</bpmn2:outgoing>
     </bpmn2:exclusiveGateway>
-    <bpmn2:sequenceFlow id="SequenceFlow_39" sourceRef="ExclusiveGateway_2" targetRef="SendTask_SendOrderUpdatedMessage">
-      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression"><![CDATA[${objectStatus != "CANCELLED" && objectStatus == "PRODUCTION"}]]></bpmn2:conditionExpression>
-    </bpmn2:sequenceFlow>
-    <bpmn2:boundaryEvent id="BoundaryEvent_6" name="Order&#10;Rejected" attachedToRef="UserTask_PerformUpdate">
-      <bpmn2:outgoing>SequenceFlow_21</bpmn2:outgoing>
-      <bpmn2:messageEventDefinition id="_MessageEventDefinition_10" messageRef="cmp_orderrejected" />
-    </bpmn2:boundaryEvent>
-    <bpmn2:boundaryEvent id="BoundaryEvent_7" name="Order&#10;Shipping" attachedToRef="UserTask_PerformUpdate">
-      <bpmn2:outgoing>SequenceFlow_7</bpmn2:outgoing>
-      <bpmn2:messageEventDefinition id="_MessageEventDefinition_11" messageRef="opp_ordershipped" />
-    </bpmn2:boundaryEvent>
     <bpmn2:serviceTask id="ServiceTask_UpdateOrder8" name="Update Order" camunda:class="com.camsolute.code.camp.engine.camunda.delegates.OrderUpdateDelegate">
       <bpmn2:extensionElements>
         <camunda:field name="targetStatus">
@@ -137,18 +85,6 @@
       <bpmn2:incoming>SequenceFlow_45</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_46</bpmn2:outgoing>
     </bpmn2:serviceTask>
-    <bpmn2:sequenceFlow id="SequenceFlow_45" name="" sourceRef="UserTask_PerformUpdate" targetRef="ServiceTask_UpdateOrder8" />
-    <bpmn2:sequenceFlow id="SequenceFlow_46" name="" sourceRef="ServiceTask_UpdateOrder8" targetRef="ExclusiveGateway_2" />
-    <bpmn2:sequenceFlow id="SequenceFlow_02drjpl" sourceRef="ServiceTask_RegisterCustomerOrderProcess" targetRef="submit_order" />
-    <bpmn2:serviceTask id="ServiceTask_RegisterCustomerOrderProcess" name="Register Customer Order Process" camunda:class="com.camsolute.code.camp.engine.camunda.delegates.RegisterCustomerProcessDelegate">
-      <bpmn2:extensionElements>
-        <camunda:field name="processName">
-          <camunda:string>customer_order_process</camunda:string>
-        </camunda:field>
-      </bpmn2:extensionElements>
-      <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
-      <bpmn2:outgoing>SequenceFlow_02drjpl</bpmn2:outgoing>
-    </bpmn2:serviceTask>
     <bpmn2:serviceTask id="ServiceTask_UnregisterCustomerOrderProcess2" name="Unregister Customer Order Process" camunda:class="com.camsolute.code.camp.engine.camunda.delegates.UnregisterCustomerProcessDelegate">
       <bpmn2:extensionElements>
         <camunda:field name="processName">
@@ -159,7 +95,6 @@
       <bpmn2:incoming>SequenceFlow_00ap02z</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_03x20st</bpmn2:outgoing>
     </bpmn2:serviceTask>
-    <bpmn2:sequenceFlow id="SequenceFlow_03x20st" sourceRef="ServiceTask_UnregisterCustomerOrderProcess2" targetRef="EndEvent_1" />
     <bpmn2:endEvent id="EndEvent_1">
       <bpmn2:incoming>SequenceFlow_03x20st</bpmn2:incoming>
     </bpmn2:endEvent>
@@ -178,7 +113,6 @@
       <bpmn2:incoming>SequenceFlow_20</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_31</bpmn2:outgoing>
     </bpmn2:sendTask>
-    <bpmn2:sequenceFlow id="SequenceFlow_00ap02z" sourceRef="SendTask_SendOrderFulfilledMessage" targetRef="ServiceTask_UnregisterCustomerOrderProcess2" />
     <bpmn2:sendTask id="SendTask_SendOrderFulfilledMessage" name="Order Fulfilled" camunda:class="com.camsolute.code.camp.engine.camunda.delegates.OrderMessengerDelegate">
       <bpmn2:extensionElements>
         <camunda:field name="messageName">
@@ -205,14 +139,91 @@
       <bpmn2:incoming>SequenceFlow_7</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_8</bpmn2:outgoing>
     </bpmn2:userTask>
+    <bpmn2:boundaryEvent id="BoundaryEvent_7" name="Order&#10;Shipping" attachedToRef="UserTask_PerformUpdate">
+      <bpmn2:outgoing>SequenceFlow_7</bpmn2:outgoing>
+      <bpmn2:messageEventDefinition id="_MessageEventDefinition_11" messageRef="prpm_order_shipped" />
+    </bpmn2:boundaryEvent>
+    <bpmn2:boundaryEvent id="BoundaryEvent_6" name="Order&#10;Rejected" attachedToRef="UserTask_PerformUpdate">
+      <bpmn2:outgoing>SequenceFlow_21</bpmn2:outgoing>
+      <bpmn2:messageEventDefinition id="_MessageEventDefinition_10" messageRef="mgtpm_order_rejected" />
+    </bpmn2:boundaryEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_21" name="" sourceRef="BoundaryEvent_6" targetRef="submit_order" />
+    <bpmn2:sequenceFlow id="SequenceFlow_9" name="" sourceRef="submit_order" targetRef="ServiceTask_UpdateOrder08" />
+    <bpmn2:sequenceFlow id="SequenceFlow_13" name="" sourceRef="SendTask_SendOrderSubmittedMessage" targetRef="UserTask_PerformUpdate" />
+    <bpmn2:sequenceFlow id="SequenceFlow_40" name="" sourceRef="SendTask_SendOrderUpdatedMessage" targetRef="UserTask_PerformUpdate" />
     <bpmn2:sequenceFlow id="SequenceFlow_17wnk7r" sourceRef="ExclusiveGateway_2" targetRef="UserTask_PerformUpdate">
-      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression"><![CDATA[${objectStatus != "CANCELLED" && objectStatus != "PRODUCTION"}]]></bpmn2:conditionExpression>
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression"><![CDATA[${objectStatus != "CANCELLED" && objectStatus != "UPDATED"}]]></bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="SequenceFlow_45" name="" sourceRef="UserTask_PerformUpdate" targetRef="ServiceTask_UpdateOrder8" />
+    <bpmn2:sequenceFlow id="SequenceFlow_39" sourceRef="ExclusiveGateway_2" targetRef="SendTask_SendOrderUpdatedMessage">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression"><![CDATA[${objectStatus == "UPDATED"}]]></bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="SequenceFlow_46" name="" sourceRef="ServiceTask_UpdateOrder8" targetRef="ExclusiveGateway_2" />
+    <bpmn2:sequenceFlow id="SequenceFlow_20" name="" sourceRef="ExclusiveGateway_2" targetRef="SendTask_SendOrderCancelledMessage">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression"><![CDATA[${objectStatus == "CANCELLED"}]]></bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="SequenceFlow_31" name="" sourceRef="SendTask_SendOrderCancelledMessage" targetRef="ServiceTask_UnregisterCustomerOrderProcess2" />
+    <bpmn2:sequenceFlow id="SequenceFlow_00ap02z" sourceRef="SendTask_SendOrderFulfilledMessage" targetRef="ServiceTask_UnregisterCustomerOrderProcess2" />
+    <bpmn2:sequenceFlow id="SequenceFlow_03x20st" sourceRef="ServiceTask_UnregisterCustomerOrderProcess2" targetRef="EndEvent_1" />
+    <bpmn2:sequenceFlow id="SequenceFlow_8" sourceRef="UserTask_ConfirmFulfillment" targetRef="SendTask_SendOrderFulfilledMessage" />
+    <bpmn2:sequenceFlow id="SequenceFlow_7" name="" sourceRef="BoundaryEvent_7" targetRef="UserTask_ConfirmFulfillment" />
+    <bpmn2:userTask id="submit_order" name="Submit Order" camunda:assignee="chris">
+      <bpmn2:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="objectStatus" label="Submit Order" type="enum" defaultValue="SUBMITTED">
+            <camunda:value id="SUBMITTED" name="Order Submitted" />
+          </camunda:formField>
+        </camunda:formData>
+        <camunda:taskListener class="com.camsolute.code.camp.engine.camunda.event.SendMessageTaskListener" event="complete" />
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_21</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_02drjpl</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_9</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:serviceTask id="ServiceTask_RegisterCustomerOrderProcess" name="Register Customer Order Process" camunda:class="com.camsolute.code.camp.engine.camunda.delegates.RegisterCustomerProcessDelegate">
+      <bpmn2:extensionElements>
+        <camunda:field name="processName">
+          <camunda:string>customer_order_process</camunda:string>
+        </camunda:field>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_02drjpl</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:startEvent id="startEvent" name="Order &#10;Received">
+      <bpmn2:extensionElements>
+        <camunda:formData businessKey="objectBusinessKey">
+          <camunda:formField id="objectBusinessId" label="Business Id" type="string" />
+          <camunda:formField id="objectId" label="Object Id" type="string" />
+          <camunda:formField id="objectStatus" label="Object Status" type="enum" defaultValue="CREATED">
+            <camunda:value id="CREATED" name="Order created" />
+          </camunda:formField>
+          <camunda:formField id="objectType" label="Object Type" type="string" />
+          <camunda:formField id="objectPrincipal" label="Object Principal" type="string" />
+          <camunda:formField id="objectBusinessKey" type="string" />
+        </camunda:formData>
+      </bpmn2:extensionElements>
+      <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_02drjpl" sourceRef="ServiceTask_RegisterCustomerOrderProcess" targetRef="submit_order" />
+    <bpmn2:sequenceFlow id="SequenceFlow_1" name="" sourceRef="startEvent" targetRef="ServiceTask_RegisterCustomerOrderProcess" />
+    <bpmn2:sequenceFlow id="SequenceFlow_1enxcpe" sourceRef="ServiceTask_UpdateOrder08" targetRef="SendTask_SendOrderSubmittedMessage" />
+    <bpmn2:serviceTask id="ServiceTask_UpdateOrder08" name="Update Order" camunda:class="com.camsolute.code.camp.engine.camunda.delegates.OrderUpdateDelegate">
+      <bpmn2:extensionElements>
+        <camunda:field name="processName">
+          <camunda:string>customer_order_process</camunda:string>
+        </camunda:field>
+        <camunda:field name="targetStatus">
+          <camunda:string>${objectStatus}</camunda:string>
+        </camunda:field>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_9</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_1enxcpe</bpmn2:outgoing>
+    </bpmn2:serviceTask>
   </bpmn2:process>
   <bpmn2:process id="process.name.Production" name="production_process" isExecutable="true">
     <bpmn2:startEvent id="StartEvent_Constructor" name="Order &#10;Released">
       <bpmn2:extensionElements>
-        <camunda:formData>
+        <camunda:formData businessKey="objectBusinessKey">
           <camunda:formField id="objectBusinessId" label="Order Number" type="string" />
           <camunda:formField id="objectId" label="Order ID" type="string" />
           <camunda:formField id="objectStatus" label="Order Status" type="enum" defaultValue="PRODUCTION">
@@ -220,10 +231,11 @@
           </camunda:formField>
           <camunda:formField id="objectType" label="object Type" type="string" />
           <camunda:formField id="objectPrincipal" label="Object Principal" type="string" />
+          <camunda:formField id="objectBusinessKey" type="string" />
         </camunda:formData>
       </bpmn2:extensionElements>
       <bpmn2:outgoing>SequenceFlow_14</bpmn2:outgoing>
-      <bpmn2:messageEventDefinition id="_SignalEventDefinition_3" messageRef="Message_1" />
+      <bpmn2:messageEventDefinition id="_SignalEventDefinition_3" messageRef="mgtpm_order_released" />
     </bpmn2:startEvent>
     <bpmn2:userTask id="UserTask_CompleteOrder" name="Complete Order" camunda:assignee="chris">
       <bpmn2:extensionElements>
@@ -302,11 +314,11 @@
     </bpmn2:serviceTask>
     <bpmn2:boundaryEvent id="BoundaryEvent_8" name="Order&#10;Updated" attachedToRef="UserTask_CompleteOrder">
       <bpmn2:outgoing>SequenceFlow_43</bpmn2:outgoing>
-      <bpmn2:messageEventDefinition id="_MessageEventDefinition_12" messageRef="cop_orderupdated" />
+      <bpmn2:messageEventDefinition id="_MessageEventDefinition_12" messageRef="opm_order_updated" />
     </bpmn2:boundaryEvent>
     <bpmn2:boundaryEvent id="BoundaryEvent_2" name="Order &#10;Cancelled" attachedToRef="UserTask_CompleteOrder">
       <bpmn2:outgoing>SequenceFlow_6</bpmn2:outgoing>
-      <bpmn2:messageEventDefinition id="_MessageEventDefinition_13" messageRef="cop_ordercancelled" />
+      <bpmn2:messageEventDefinition id="_MessageEventDefinition_13" messageRef="opm_order_cancelled" />
     </bpmn2:boundaryEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_14" name="" sourceRef="StartEvent_Constructor" targetRef="ServiceTask_RegisterProductionProcess" />
     <bpmn2:sequenceFlow id="SequenceFlow_15" name="" sourceRef="ServiceTask_RegisterProductionProcess" targetRef="UserTask_CompleteOrder" />
@@ -350,7 +362,7 @@
     <bpmn2:sendTask id="SendTask_OrderRejected" name="Order Rejected" camunda:class="com.camsolute.code.camp.engine.camunda.delegates.OrderMessengerDelegate">
       <bpmn2:extensionElements>
         <camunda:field name="messageName">
-          <camunda:string>mgtpm__order_rejected</camunda:string>
+          <camunda:string>mgtpm_order_rejected</camunda:string>
         </camunda:field>
         <camunda:field name="businessKey">
           <camunda:expression>${businessKey}</camunda:expression>
@@ -405,7 +417,7 @@
     </bpmn2:serviceTask>
     <bpmn2:startEvent id="StartEvent_1" name="Order Submitted" camunda:formKey="Camp_Start_Customer_Order">
       <bpmn2:extensionElements>
-        <camunda:formData>
+        <camunda:formData businessKey="objectBusinessKey">
           <camunda:formField id="objectBusinessId" label="Order Number" type="string" />
           <camunda:formField id="objectId" label="Order ID" type="string" />
           <camunda:formField id="objectStatus" label="Order Status" type="enum" defaultValue="SUBMITTED">
@@ -413,10 +425,11 @@
           </camunda:formField>
           <camunda:formField id="objectType" label="Object Type" type="string" />
           <camunda:formField id="object Principal" label="Object Principal" type="string" />
+          <camunda:formField id="objectBusinessKey" type="string" />
         </camunda:formData>
       </bpmn2:extensionElements>
       <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
-      <bpmn2:messageEventDefinition id="_MessageEventDefinition_4" messageRef="Message_2" />
+      <bpmn2:messageEventDefinition id="_MessageEventDefinition_4" messageRef="opm_order_submitted" />
     </bpmn2:startEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_11d40md" sourceRef="ServiceTask_UnregisterCustomerOrderManagementProcess" targetRef="EndEvent_4" />
     <bpmn2:sequenceFlow id="SequenceFlow_29" name="" sourceRef="SendTask_OrderRejected" targetRef="ServiceTask_UnregisterCustomerOrderManagementProcess" />
@@ -432,45 +445,43 @@
       <bpmn2:outgoing>SequenceFlow_11d40md</bpmn2:outgoing>
     </bpmn2:serviceTask>
   </bpmn2:process>
-  <bpmn2:signal id="Signal_1" name="cop_orderupdated" />
-  <bpmn2:signal id="Signal_2" name="cop_ordercancelled" />
-  <bpmn2:message id="Message_1" name="mgtpm_order_released" />
-  <bpmn2:message id="Message_2" name="opm_order_submitted" />
+  <bpmn2:message id="mgtpm_order_released" name="mgtpm_order_released" />
+  <bpmn2:message id="opm_order_submitted" name="opm_order_submitted" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="_Collaboration_3">
       <bpmndi:BPMNShape id="_BPMNShape_Participant_5" bpmnElement="_Customer" isHorizontal="true">
-        <dc:Bounds x="300" y="709" width="1378" height="359" />
+        <dc:Bounds x="43" y="705" width="1620" height="360" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_3" bpmnElement="startEvent">
-        <dc:Bounds x="360" y="857" width="36" height="36" />
+        <dc:Bounds x="213" y="853" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="347" y="898" width="81" height="52" />
+          <dc:Bounds x="218" y="894" width="46" height="24" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_UserTask_2" bpmnElement="submit_order">
-        <dc:Bounds x="560" y="835" width="100" height="80" />
+        <dc:Bounds x="413" y="831" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="SequenceFlow_1" sourceElement="_BPMNShape_StartEvent_3" targetElement="ServiceTask_1xhjw81_di">
-        <di:waypoint xsi:type="dc:Point" x="396" y="875" />
-        <di:waypoint xsi:type="dc:Point" x="431" y="875" />
+        <di:waypoint xsi:type="dc:Point" x="249" y="871" />
+        <di:waypoint xsi:type="dc:Point" x="284" y="871" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="368.5" y="857" width="90" height="6" />
+          <dc:Bounds x="222" y="853" width="90" height="6" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_UserTask_4" bpmnElement="UserTask_ConfirmFulfillment">
-        <dc:Bounds x="968" y="967" width="100" height="80" />
+        <dc:Bounds x="953" y="964" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_EndEvent_2" bpmnElement="EndEvent_1">
-        <dc:Bounds x="1622" y="857" width="36" height="36" />
+        <dc:Bounds x="1607" y="854" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1595" y="898" width="90" height="0" />
+          <dc:Bounds x="1580" y="895" width="90" height="0" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_8" bpmnElement="SequenceFlow_8" sourceElement="_BPMNShape_UserTask_4" targetElement="SendTask_0lot97j_di">
-        <di:waypoint xsi:type="dc:Point" x="1068" y="1007" />
-        <di:waypoint xsi:type="dc:Point" x="1189" y="1007" />
+        <di:waypoint xsi:type="dc:Point" x="1053" y="1004" />
+        <di:waypoint xsi:type="dc:Point" x="1174" y="1004" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1083.5" y="992" width="90" height="0" />
+          <dc:Bounds x="1069" y="989" width="90" height="0" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_Participant_6" bpmnElement="_Production_Manager" isHorizontal="true">
@@ -506,33 +517,33 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_MessageFlow_4" bpmnElement="MessageFlow_4" sourceElement="_BPMNShape_SendTask_2" targetElement="_BPMNShape_Participant_5">
         <di:waypoint xsi:type="dc:Point" x="1582" y="210" />
-        <di:waypoint xsi:type="dc:Point" x="1582" y="709" />
+        <di:waypoint xsi:type="dc:Point" x="1582" y="705" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1538" y="278.16064257028114" width="84" height="24" />
+          <dc:Bounds x="1538" y="277.35871743486973" width="84" height="24" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_SendTask_3" bpmnElement="SendTask_SendOrderSubmittedMessage">
-        <dc:Bounds x="692" y="835" width="100" height="80" />
+        <dc:Bounds x="677" y="832" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_9" bpmnElement="SequenceFlow_9" sourceElement="_BPMNShape_UserTask_2" targetElement="_BPMNShape_SendTask_3">
-        <di:waypoint xsi:type="dc:Point" x="660" y="875" />
-        <di:waypoint xsi:type="dc:Point" x="692" y="875" />
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_9" bpmnElement="SequenceFlow_9" sourceElement="_BPMNShape_UserTask_2" targetElement="ServiceTask_0i3nqrm_di">
+        <di:waypoint xsi:type="dc:Point" x="513" y="871" />
+        <di:waypoint xsi:type="dc:Point" x="542" y="872" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="667" y="875" width="6" height="6" />
+          <dc:Bounds x="482.5" y="853.5" width="90" height="6" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_13" bpmnElement="SequenceFlow_13" sourceElement="_BPMNShape_SendTask_3" targetElement="_BPMNShape_UserTask_7">
-        <di:waypoint xsi:type="dc:Point" x="792" y="875" />
-        <di:waypoint xsi:type="dc:Point" x="824" y="875" />
+        <di:waypoint xsi:type="dc:Point" x="777" y="872" />
+        <di:waypoint xsi:type="dc:Point" x="809" y="872" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="792" y="875" width="6" height="6" />
+          <dc:Bounds x="735" y="872" width="90" height="6" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_MessageFlow_5" bpmnElement="MessageFlow_5" sourceElement="_BPMNShape_SendTask_3" targetElement="_BPMNShape_Participant_7">
-        <di:waypoint xsi:type="dc:Point" x="742" y="835" />
-        <di:waypoint xsi:type="dc:Point" x="742" y="613" />
+        <di:waypoint xsi:type="dc:Point" x="727" y="832" />
+        <di:waypoint xsi:type="dc:Point" x="727" y="613" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="653" y="769" width="81" height="12" />
+          <dc:Bounds x="638" y="766.8108108108108" width="81" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_11" bpmnElement="SequenceFlow_11" sourceElement="_BPMNShape_ServiceTask_2" targetElement="_BPMNShape_SendTask_2">
@@ -638,9 +649,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_MessageFlow_1" bpmnElement="MessageFlow_1" sourceElement="_BPMNShape_SendTask_4" targetElement="_BPMNShape_Participant_5">
         <di:waypoint xsi:type="dc:Point" x="686" y="606" />
-        <di:waypoint xsi:type="dc:Point" x="686" y="709" />
+        <di:waypoint xsi:type="dc:Point" x="686" y="705" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="656" y="654.5" width="90" height="6" />
+          <dc:Bounds x="656" y="652.5" width="90" height="6" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_MessageFlow_2" bpmnElement="MessageFlow_2" sourceElement="_BPMNShape_SendTask_5" targetElement="_BPMNShape_Participant_6">
@@ -666,98 +677,98 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_SendTask_6" bpmnElement="SendTask_SendOrderCancelledMessage">
-        <dc:Bounds x="1184" y="831" width="109" height="88" />
+        <dc:Bounds x="1169" y="828" width="109" height="88" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_31" bpmnElement="SequenceFlow_31" sourceElement="_BPMNShape_SendTask_6" targetElement="Task_1h896hv_di">
-        <di:waypoint xsi:type="dc:Point" x="1293" y="875" />
-        <di:waypoint xsi:type="dc:Point" x="1447" y="875" />
+        <di:waypoint xsi:type="dc:Point" x="1278" y="872" />
+        <di:waypoint xsi:type="dc:Point" x="1432" y="872" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1325" y="857" width="90" height="6" />
+          <dc:Bounds x="1310" y="854" width="90" height="6" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_7" bpmnElement="SequenceFlow_7" sourceElement="_BPMNShape_BoundaryEvent_8" targetElement="_BPMNShape_UserTask_4">
-        <di:waypoint xsi:type="dc:Point" x="933" y="937" />
-        <di:waypoint xsi:type="dc:Point" x="933" y="1007" />
-        <di:waypoint xsi:type="dc:Point" x="968" y="1007" />
+        <di:waypoint xsi:type="dc:Point" x="918" y="934" />
+        <di:waypoint xsi:type="dc:Point" x="918" y="1004" />
+        <di:waypoint xsi:type="dc:Point" x="953" y="1004" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="903" y="969" width="90" height="6" />
+          <dc:Bounds x="888" y="966" width="90" height="6" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_20" bpmnElement="SequenceFlow_20" sourceElement="_BPMNShape_ExclusiveGateway_4" targetElement="_BPMNShape_SendTask_6">
-        <di:waypoint xsi:type="dc:Point" x="1150" y="874" />
-        <di:waypoint xsi:type="dc:Point" x="1184" y="875" />
+        <di:waypoint xsi:type="dc:Point" x="1135" y="871" />
+        <di:waypoint xsi:type="dc:Point" x="1169" y="872" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1131" y="875" width="90" height="6" />
+          <dc:Bounds x="1116" y="872" width="90" height="6" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_21" bpmnElement="SequenceFlow_21" sourceElement="_BPMNShape_BoundaryEvent_7" targetElement="_BPMNShape_UserTask_2">
-        <di:waypoint xsi:type="dc:Point" x="824" y="937" />
-        <di:waypoint xsi:type="dc:Point" x="824" y="967" />
-        <di:waypoint xsi:type="dc:Point" x="610" y="967" />
-        <di:waypoint xsi:type="dc:Point" x="610" y="915" />
+        <di:waypoint xsi:type="dc:Point" x="809" y="934" />
+        <di:waypoint xsi:type="dc:Point" x="809" y="964" />
+        <di:waypoint xsi:type="dc:Point" x="463" y="964" />
+        <di:waypoint xsi:type="dc:Point" x="463" y="911" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="784" y="967" width="6" height="6" />
+          <dc:Bounds x="591" y="946" width="90" height="6" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_UserTask_7" bpmnElement="UserTask_PerformUpdate">
-        <dc:Bounds x="824" y="831" width="109" height="88" />
+        <dc:Bounds x="809" y="828" width="109" height="88" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_ExclusiveGateway_4" bpmnElement="ExclusiveGateway_2" isMarkerVisible="true">
-        <dc:Bounds x="1100" y="849" width="50" height="50" />
+        <dc:Bounds x="1085" y="846" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1125" y="904" width="0" height="0" />
+          <dc:Bounds x="1065" y="901" width="90" height="0" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_SendTask_8" bpmnElement="SendTask_SendOrderUpdatedMessage">
-        <dc:Bounds x="1071" y="732" width="109" height="88" />
+        <dc:Bounds x="1056" y="729" width="109" height="88" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_39" bpmnElement="SequenceFlow_39" sourceElement="_BPMNShape_ExclusiveGateway_4" targetElement="_BPMNShape_SendTask_8">
-        <di:waypoint xsi:type="dc:Point" x="1125" y="849" />
-        <di:waypoint xsi:type="dc:Point" x="1125" y="820" />
+        <di:waypoint xsi:type="dc:Point" x="1110" y="846" />
+        <di:waypoint xsi:type="dc:Point" x="1110" y="817" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1125" y="839" width="0" height="0" />
+          <dc:Bounds x="1065" y="836" width="90" height="0" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_40" bpmnElement="SequenceFlow_40" sourceElement="_BPMNShape_SendTask_8" targetElement="_BPMNShape_UserTask_7">
-        <di:waypoint xsi:type="dc:Point" x="1071" y="776" />
-        <di:waypoint xsi:type="dc:Point" x="878" y="776" />
-        <di:waypoint xsi:type="dc:Point" x="878" y="831" />
+        <di:waypoint xsi:type="dc:Point" x="1056" y="773" />
+        <di:waypoint xsi:type="dc:Point" x="863" y="773" />
+        <di:waypoint xsi:type="dc:Point" x="863" y="828" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1038" y="776" width="6" height="6" />
+          <dc:Bounds x="981" y="773" width="90" height="6" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_BoundaryEvent_7" bpmnElement="BoundaryEvent_6">
-        <dc:Bounds x="806" y="901" width="36" height="36" />
+        <dc:Bounds x="791" y="898" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="744" y="918" width="77" height="52" />
+          <dc:Bounds x="746" y="915" width="44" height="24" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_BoundaryEvent_8" bpmnElement="BoundaryEvent_7">
-        <dc:Bounds x="915" y="901" width="36" height="36" />
+        <dc:Bounds x="900" y="898" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="895" y="942" width="76" height="52" />
+          <dc:Bounds x="897" y="939" width="43" height="24" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_MessageFlow_3" bpmnElement="MessageFlow_3" sourceElement="_BPMNShape_SendTask_6" targetElement="_BPMNShape_Participant_6">
-        <di:waypoint xsi:type="dc:Point" x="1238" y="831" />
-        <di:waypoint xsi:type="dc:Point" x="1238" y="334" />
+        <di:waypoint xsi:type="dc:Point" x="1223" y="828" />
+        <di:waypoint xsi:type="dc:Point" x="1223" y="334" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1208" y="580" width="90" height="6" />
+          <dc:Bounds x="1193" y="578" width="90" height="6" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_MessageFlow_6" bpmnElement="MessageFlow_6" sourceElement="_BPMNShape_SendTask_8" targetElement="_BPMNShape_Participant_6">
-        <di:waypoint xsi:type="dc:Point" x="1125" y="732" />
-        <di:waypoint xsi:type="dc:Point" x="1125" y="334" />
+        <di:waypoint xsi:type="dc:Point" x="1110" y="729" />
+        <di:waypoint xsi:type="dc:Point" x="1110" y="334" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1095" y="530" width="90" height="6" />
+          <dc:Bounds x="1080" y="528.5" width="90" height="6" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_MessageFlow_7" bpmnElement="MessageFlow_7" sourceElement="_BPMNShape_SendTask_8" targetElement="_BPMNShape_Participant_7">
-        <di:waypoint xsi:type="dc:Point" x="1125" y="732" />
-        <di:waypoint xsi:type="dc:Point" x="1125" y="498" />
+        <di:waypoint xsi:type="dc:Point" x="1110" y="729" />
+        <di:waypoint xsi:type="dc:Point" x="1110" y="498" />
         <di:waypoint xsi:type="dc:Point" x="1052" y="498" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1095" y="612" width="90" height="6" />
+          <dc:Bounds x="1080" y="610.5" width="90" height="6" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_BoundaryEvent_9" bpmnElement="BoundaryEvent_8">
@@ -788,22 +799,22 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_ServiceTask_10" bpmnElement="ServiceTask_UpdateOrder8">
-        <dc:Bounds x="963" y="831" width="109" height="88" />
+        <dc:Bounds x="948" y="828" width="109" height="88" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_45" bpmnElement="SequenceFlow_45" sourceElement="_BPMNShape_UserTask_7" targetElement="_BPMNShape_ServiceTask_10">
-        <di:waypoint xsi:type="dc:Point" x="932" y="875" />
-        <di:waypoint xsi:type="dc:Point" x="963" y="875" />
+        <di:waypoint xsi:type="dc:Point" x="917" y="872" />
+        <di:waypoint xsi:type="dc:Point" x="948" y="872" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="955" y="875" width="6" height="6" />
+          <dc:Bounds x="898" y="872" width="90" height="6" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_46" bpmnElement="SequenceFlow_46" sourceElement="_BPMNShape_ServiceTask_10" targetElement="_BPMNShape_ExclusiveGateway_4">
-        <di:waypoint xsi:type="dc:Point" x="1071" y="875" />
-        <di:waypoint xsi:type="dc:Point" x="1086" y="875" />
-        <di:waypoint xsi:type="dc:Point" x="1086" y="874" />
-        <di:waypoint xsi:type="dc:Point" x="1100" y="874" />
+        <di:waypoint xsi:type="dc:Point" x="1056" y="872" />
+        <di:waypoint xsi:type="dc:Point" x="1071" y="872" />
+        <di:waypoint xsi:type="dc:Point" x="1071" y="871" />
+        <di:waypoint xsi:type="dc:Point" x="1085" y="871" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1083" y="875" width="6" height="6" />
+          <dc:Bounds x="1026" y="872" width="90" height="6" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_BoundaryEvent_11" bpmnElement="BoundaryEvent_2">
@@ -822,14 +833,14 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_02drjpl_di" bpmnElement="SequenceFlow_02drjpl">
-        <di:waypoint xsi:type="dc:Point" x="531" y="875" />
-        <di:waypoint xsi:type="dc:Point" x="560" y="875" />
+        <di:waypoint xsi:type="dc:Point" x="384" y="871" />
+        <di:waypoint xsi:type="dc:Point" x="413" y="871" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="545.5" y="854" width="0" height="12" />
+          <dc:Bounds x="354" y="850" width="90" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ServiceTask_1xhjw81_di" bpmnElement="ServiceTask_RegisterCustomerOrderProcess">
-        <dc:Bounds x="431" y="835" width="100" height="80" />
+        <dc:Bounds x="284" y="831" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_0jul4e6_di" bpmnElement="ServiceTask_UnregisterCustomerOrderManagementProcess">
         <dc:Bounds x="858" y="462" width="100" height="80" />
@@ -860,13 +871,13 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Task_1h896hv_di" bpmnElement="ServiceTask_UnregisterCustomerOrderProcess2">
-        <dc:Bounds x="1446.8890649762282" y="835" width="100" height="80" />
+        <dc:Bounds x="1432" y="832" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_03x20st_di" bpmnElement="SequenceFlow_03x20st">
-        <di:waypoint xsi:type="dc:Point" x="1547" y="875" />
-        <di:waypoint xsi:type="dc:Point" x="1622" y="875" />
+        <di:waypoint xsi:type="dc:Point" x="1532" y="872" />
+        <di:waypoint xsi:type="dc:Point" x="1607" y="872" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1539.5" y="854" width="90" height="12" />
+          <dc:Bounds x="1525" y="851" width="90" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Task_0btdoxz_di" bpmnElement="ServiceTask_UnregisterProductionProcess1">
@@ -880,26 +891,36 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_00ap02z_di" bpmnElement="SequenceFlow_00ap02z">
-        <di:waypoint xsi:type="dc:Point" x="1289" y="1007" />
-        <di:waypoint xsi:type="dc:Point" x="1356" y="1007" />
-        <di:waypoint xsi:type="dc:Point" x="1356" y="875" />
-        <di:waypoint xsi:type="dc:Point" x="1447" y="875" />
+        <di:waypoint xsi:type="dc:Point" x="1274" y="1004" />
+        <di:waypoint xsi:type="dc:Point" x="1341" y="1004" />
+        <di:waypoint xsi:type="dc:Point" x="1341" y="872" />
+        <di:waypoint xsi:type="dc:Point" x="1432" y="872" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1371" y="935" width="0" height="12" />
+          <dc:Bounds x="1311" y="932" width="90" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="SendTask_0lot97j_di" bpmnElement="SendTask_SendOrderFulfilledMessage">
-        <dc:Bounds x="1189" y="967" width="100" height="80" />
+        <dc:Bounds x="1174" y="964" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_17wnk7r_di" bpmnElement="SequenceFlow_17wnk7r">
-        <di:waypoint xsi:type="dc:Point" x="1111" y="863" />
-        <di:waypoint xsi:type="dc:Point" x="1047" y="808" />
-        <di:waypoint xsi:type="dc:Point" x="879" y="808" />
-        <di:waypoint xsi:type="dc:Point" x="879" y="831" />
+        <di:waypoint xsi:type="dc:Point" x="1096" y="860" />
+        <di:waypoint xsi:type="dc:Point" x="1032" y="805" />
+        <di:waypoint xsi:type="dc:Point" x="864" y="805" />
+        <di:waypoint xsi:type="dc:Point" x="864" y="828" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="963" y="787" width="0" height="12" />
+          <dc:Bounds x="948" y="784" width="0" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1enxcpe_di" bpmnElement="SequenceFlow_1enxcpe">
+        <di:waypoint xsi:type="dc:Point" x="642" y="872" />
+        <di:waypoint xsi:type="dc:Point" x="677" y="872" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="659.5" y="851" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0i3nqrm_di" bpmnElement="ServiceTask_UpdateOrder08">
+        <dc:Bounds x="542" y="832" width="100" height="80" />
+      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>

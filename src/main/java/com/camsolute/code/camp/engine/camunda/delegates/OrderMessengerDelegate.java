@@ -19,11 +19,15 @@
  ******************************************************************************/
 package com.camsolute.code.camp.engine.camunda.delegates;
 
+import javax.el.ExpressionFactory;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.Expression;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.camunda.bpm.engine.impl.javax.el.ELContext;
+import org.camunda.bpm.engine.impl.juel.ExpressionFactoryImpl;
 import org.camunda.bpm.engine.impl.persistence.entity.ExecutionEntity;
 import org.camunda.bpm.engine.runtime.Execution;
 import org.camunda.bpm.engine.runtime.MessageCorrelationResult;
@@ -41,6 +45,7 @@ public class OrderMessengerDelegate implements JavaDelegate {
 	private Expression messageName;
 	private Expression businessKey;
 	private Expression processName;
+	private Expression targetStatus = null;
 
 	public Expression getBusinessKey() {
 		return businessKey;
@@ -70,6 +75,13 @@ public class OrderMessengerDelegate implements JavaDelegate {
 		long startTime = System.currentTimeMillis();
 		String messageName = (String) this.messageName.getValue(execution);
 		String processName = (String) this.processName.getValue(execution);
+		
+		String targetStatus = null;
+		
+		if(this.targetStatus != null) {
+			targetStatus = (String) this.targetStatus.getValue(execution);
+		}
+		
 		String _f = null;
 		String msg = null;
 		if(!Util._IN_PRODUCTION) {
@@ -84,7 +96,9 @@ public class OrderMessengerDelegate implements JavaDelegate {
 		String objectPrincipal = (String) execution.getVariable("objectPrincipal");
 		String businessKey = ((ExecutionEntity) execution).getBusinessKey();
 		String processInstanceId = ((ExecutionEntity) execution).getProcessInstanceId();
+		String objectBusinessKey = businessKey;//(String) execution.getVariable("objectBusinessKey");
 		
+		if(!Util._IN_PRODUCTION){msg = "----[objectBusinessKey '"+objectBusinessKey+"']----";LOG.info(String.format(fmt, _f,msg));}
 		if(!Util._IN_PRODUCTION){msg = "----[objectBusinessId '"+objectBusinessId+"']----";LOG.info(String.format(fmt, _f,msg));}
 		if(!Util._IN_PRODUCTION){msg = "----[objectId '"+objectId+"']----";LOG.info(String.format(fmt, _f,msg));}
 		if(!Util._IN_PRODUCTION){msg = "----[objectStatus '"+objectStatus+"']----";LOG.info(String.format(fmt, _f,msg));}
@@ -94,28 +108,34 @@ public class OrderMessengerDelegate implements JavaDelegate {
 		if(!Util._IN_PRODUCTION){msg = "----[businessKey '"+businessKey+"']----";LOG.info(String.format(fmt, _f,msg));}
 		if(!Util._IN_PRODUCTION){msg = "----[processName '"+processName+"']----";LOG.info(String.format(fmt, _f,msg));}
 		if(!Util._IN_PRODUCTION){msg = "----[processInstanceId '"+processInstanceId+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[targetStatus '"+targetStatus+"']----";LOG.info(String.format(fmt, _f,msg));}
 		
-		
+		if(targetStatus != null) {
+			objectStatus = targetStatus;
+			execution.setVariable("objectStatus",targetStatus);
+		}
 		MessageCorrelationResult result = execution.getProcessEngineServices().getRuntimeService().createMessageCorrelation(messageName)
 		    .processInstanceVariableEquals("objectBusinessId", objectBusinessId)
 		    .processInstanceVariableEquals("objectId", objectId)
+			.setVariable("objectBusinessKey", objectBusinessKey)
 			.setVariable("objectBusinessId", objectBusinessId)
 			.setVariable("objectId",objectId)
 			.setVariable("objectStatus", objectStatus)
 			.setVariable("objectType",objectType)
 			.setVariable("objectPrincipal", objectPrincipal)
-			.processInstanceBusinessKey(businessKey).correlateWithResult();
+//			.processInstanceBusinessKey(businessKey) //TODO:7 objectBusinessKey
+			.correlateWithResult();
 //			.correlateWithResult();
-		switch(result.getResultType()) {
-		case ProcessDefinition:
-			ProcessInstance pi = result.getProcessInstance();
-			break;
-		case Execution:
-			Execution e = result.getExecution();
-			break;
-		default:
-			break;
-		}
+//		switch(result.getResultType()) {
+//		case ProcessDefinition:
+//			ProcessInstance pi = result.getProcessInstance();
+//			break;
+//		case Execution:
+//			Execution e = result.getExecution();
+//			break;
+//		default:
+//			break;
+//		}
 		/*
 		 * This would also work....
 		 */

@@ -29,6 +29,8 @@ import org.camunda.bpm.engine.impl.persistence.entity.ExecutionEntity;
 import com.camsolute.code.camp.lib.models.order.Order;
 import com.camsolute.code.camp.lib.models.order.Order.UpdateAttribute;
 import com.camsolute.code.camp.lib.models.order.OrderRest;
+import com.camsolute.code.camp.lib.models.process.Process;
+import com.camsolute.code.camp.lib.models.process.ProcessList;
 import com.camsolute.code.camp.lib.utilities.Util;
 
 
@@ -39,7 +41,15 @@ public class OrderUpdateDelegate implements JavaDelegate {
 	
     private Expression targetStatus;
     private Expression processName;
+    private String status = null;
     
+    public void setStatus(String s) {
+    	this.status = s;
+    }
+    
+    public String getStatus() {
+    	return status;
+    }
 
 	public Expression getTargetStatus() {
 		return targetStatus;
@@ -58,8 +68,15 @@ public class OrderUpdateDelegate implements JavaDelegate {
 	}
 
 	public void execute(DelegateExecution execution) throws Exception {
+		
 		long startTime = System.currentTimeMillis();
+		
 		String targetStatus = (String) execution.getVariable("objectStatus");
+		
+		if(status != null) {
+			targetStatus = status;
+		}
+		
 //		String targetStatus = (String) this.targetStatus.getValue(execution);
 		String _f = null;
 		String msg = null;
@@ -68,6 +85,7 @@ public class OrderUpdateDelegate implements JavaDelegate {
 			msg = "====[ handling order update event: updating status to '"+targetStatus+"']====";LOG.traceEntry(String.format(fmt,(_f+">>>>>>>>>").toUpperCase(),msg));
 		}
 
+		String objectBusinessKey = (String) execution.getVariable("objectBusinessKey");
 		String objectBusinessId = (String) execution.getVariable("objectBusinessId");
 		String objectId = (String) execution.getVariable("objectId");
 		String objectStatus = (String) execution.getVariable("objectStatus");
@@ -78,6 +96,7 @@ public class OrderUpdateDelegate implements JavaDelegate {
 		String processInstanceId = ((ExecutionEntity) execution).getProcessInstanceId();
 		
 		
+		if(!Util._IN_PRODUCTION){msg = "----[objectBusinessKey '"+objectBusinessKey+"']----";LOG.info(String.format(fmt, _f,msg));}
 		if(!Util._IN_PRODUCTION){msg = "----[objectBusinessId '"+objectBusinessId+"']----";LOG.info(String.format(fmt, _f,msg));}
 		if(!Util._IN_PRODUCTION){msg = "----[objectId '"+objectId+"']----";LOG.info(String.format(fmt, _f,msg));}
 		if(!Util._IN_PRODUCTION){msg = "----[objectStatus '"+objectStatus+"']----";LOG.info(String.format(fmt, _f,msg));}
@@ -89,14 +108,15 @@ public class OrderUpdateDelegate implements JavaDelegate {
 		if(!Util._IN_PRODUCTION){msg = "----[targetStatus '"+targetStatus+"']----";LOG.info(String.format(fmt, _f,msg));}
 		
 		Order o = OrderRest.instance().updateAttribute(UpdateAttribute.STATUS, objectBusinessId, targetStatus, !Util._IN_PRODUCTION);
+//		ProcessList pl = OrderRest.instance().loadProcessReferences(o.onlyBusinessId(), !Util._IN_PRODUCTION);
 		//FIXME: TODO: set variable in all relevant order process instances via o.observerProcesses and correlating the appropriate processes
-/* something like this but instanceId must be executionId if they are not the same thing
-		for(OrderProcess op:o.observerProcesses().toList().value()) {
-			if(!op.ended()&&!op.suspended()) {
-				execution.getProcessEngineServices().getRuntimeService().setVariable(op.instanceId(), "objectId", String.valueOf(o.id()));
-			}
-		}
-*/
+		//TODO: something like this but instanceId must be executionId if they are not the same thing
+//		for(Process<?> op:pl) {
+//			if(!op.ended()&&!op.suspended()) {
+//				execution.getProcessEngineServices().getRuntimeService().setVariable(op.instanceId(), "objectId", String.valueOf(o.id()));
+//			}
+//		}
+
 
 //		execution.setVariable("objectId", String.valueOf(o.id()));
 //		if(!Util._IN_PRODUCTION){msg = "----[updated objectId('"+o.id()+"')]----";LOG.info(String.format(fmt, _f,msg));}
