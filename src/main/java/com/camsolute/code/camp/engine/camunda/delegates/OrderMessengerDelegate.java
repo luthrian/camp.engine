@@ -25,6 +25,10 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.Expression;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.engine.impl.persistence.entity.ExecutionEntity;
+import org.camunda.bpm.engine.runtime.Execution;
+import org.camunda.bpm.engine.runtime.MessageCorrelationResult;
+import org.camunda.bpm.engine.runtime.MessageCorrelationResultType;
+import org.camunda.bpm.engine.runtime.ProcessInstance;
 
 import com.camsolute.code.camp.lib.utilities.Util;
 
@@ -92,7 +96,7 @@ public class OrderMessengerDelegate implements JavaDelegate {
 		if(!Util._IN_PRODUCTION){msg = "----[processInstanceId '"+processInstanceId+"']----";LOG.info(String.format(fmt, _f,msg));}
 		
 		
-		execution.getProcessEngineServices().getRuntimeService().createMessageCorrelation(messageName)
+		MessageCorrelationResult result = execution.getProcessEngineServices().getRuntimeService().createMessageCorrelation(messageName)
 		    .processInstanceVariableEquals("objectBusinessId", objectBusinessId)
 		    .processInstanceVariableEquals("objectId", objectId)
 			.setVariable("objectBusinessId", objectBusinessId)
@@ -100,9 +104,18 @@ public class OrderMessengerDelegate implements JavaDelegate {
 			.setVariable("objectStatus", objectStatus)
 			.setVariable("objectType",objectType)
 			.setVariable("objectPrincipal", objectPrincipal)
-			.processInstanceBusinessKey(businessKey)
-			.correlateWithResult();
-		
+			.processInstanceBusinessKey(businessKey).correlateWithResult();
+//			.correlateWithResult();
+		switch(result.getResultType()) {
+		case ProcessDefinition:
+			ProcessInstance pi = result.getProcessInstance();
+			break;
+		case Execution:
+			Execution e = result.getExecution();
+			break;
+		default:
+			break;
+		}
 		/*
 		 * This would also work....
 		 */

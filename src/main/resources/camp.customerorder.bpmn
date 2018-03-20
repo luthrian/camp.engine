@@ -62,6 +62,9 @@
         <camunda:field name="processName">
           <camunda:string>customer_order_process</camunda:string>
         </camunda:field>
+        <camunda:field name="newStatus">
+          <camunda:string>SUBMITTED</camunda:string>
+        </camunda:field>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_9</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_13</bpmn2:outgoing>
@@ -72,7 +75,7 @@
     <bpmn2:sequenceFlow id="SequenceFlow_8" sourceRef="UserTask_ConfirmFulfillment" targetRef="SendTask_SendOrderFulfilledMessage" />
     <bpmn2:sequenceFlow id="SequenceFlow_7" name="" sourceRef="BoundaryEvent_7" targetRef="UserTask_ConfirmFulfillment" />
     <bpmn2:sequenceFlow id="SequenceFlow_20" name="" sourceRef="ExclusiveGateway_2" targetRef="SendTask_SendOrderCancelledMessage">
-      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression"><![CDATA[${objectStatus == "CANCELLED"}]]></bpmn2:conditionExpression>
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression"><![CDATA[${objectStatus == "CANCELLED" && objectStatus == "PRODUCTION"}]]></bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:sequenceFlow id="SequenceFlow_21" name="" sourceRef="BoundaryEvent_6" targetRef="submit_order" />
     <bpmn2:userTask id="UserTask_PerformUpdate" name="Perform Update" camunda:assignee="chris">
@@ -86,6 +89,7 @@
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_13</bpmn2:incoming>
       <bpmn2:incoming>SequenceFlow_40</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_17wnk7r</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_45</bpmn2:outgoing>
     </bpmn2:userTask>
     <bpmn2:sendTask id="SendTask_SendOrderUpdatedMessage" name="Order Updated" camunda:class="com.camsolute.code.camp.engine.camunda.delegates.OrderMessengerDelegate">
@@ -108,9 +112,10 @@
       <bpmn2:incoming>SequenceFlow_46</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_20</bpmn2:outgoing>
       <bpmn2:outgoing>SequenceFlow_39</bpmn2:outgoing>
+      <bpmn2:outgoing>SequenceFlow_17wnk7r</bpmn2:outgoing>
     </bpmn2:exclusiveGateway>
     <bpmn2:sequenceFlow id="SequenceFlow_39" sourceRef="ExclusiveGateway_2" targetRef="SendTask_SendOrderUpdatedMessage">
-      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression"><![CDATA[${objectStatus != "CANCELLED"}]]></bpmn2:conditionExpression>
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression"><![CDATA[${objectStatus != "CANCELLED" && objectStatus == "PRODUCTION"}]]></bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:boundaryEvent id="BoundaryEvent_6" name="Order&#10;Rejected" attachedToRef="UserTask_PerformUpdate">
       <bpmn2:outgoing>SequenceFlow_21</bpmn2:outgoing>
@@ -200,6 +205,9 @@
       <bpmn2:incoming>SequenceFlow_7</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_8</bpmn2:outgoing>
     </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_17wnk7r" sourceRef="ExclusiveGateway_2" targetRef="UserTask_PerformUpdate">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression"><![CDATA[${objectStatus != "CANCELLED" && objectStatus != "PRODUCTION"}]]></bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
   </bpmn2:process>
   <bpmn2:process id="process.name.Production" name="production_process" isExecutable="true">
     <bpmn2:startEvent id="StartEvent_Constructor" name="Order &#10;Released">
@@ -883,6 +891,15 @@
       <bpmndi:BPMNShape id="SendTask_0lot97j_di" bpmnElement="SendTask_SendOrderFulfilledMessage">
         <dc:Bounds x="1189" y="967" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_17wnk7r_di" bpmnElement="SequenceFlow_17wnk7r">
+        <di:waypoint xsi:type="dc:Point" x="1111" y="863" />
+        <di:waypoint xsi:type="dc:Point" x="1047" y="808" />
+        <di:waypoint xsi:type="dc:Point" x="879" y="808" />
+        <di:waypoint xsi:type="dc:Point" x="879" y="831" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="963" y="787" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
