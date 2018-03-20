@@ -57,7 +57,7 @@
           <camunda:string>opm_order_submitted</camunda:string>
         </camunda:field>
         <camunda:field name="businessKey">
-          <camunda:string>${businessKey}</camunda:string>
+          <camunda:expression>${businessKey}</camunda:expression>
         </camunda:field>
         <camunda:field name="processName">
           <camunda:string>customer_order_process</camunda:string>
@@ -94,7 +94,7 @@
           <camunda:string>opm_order_updated</camunda:string>
         </camunda:field>
         <camunda:field name="businessKey">
-          <camunda:string>${businessKey}</camunda:string>
+          <camunda:expression>${businessKey}</camunda:expression>
         </camunda:field>
         <camunda:field name="processName">
           <camunda:string>customer_order_process</camunda:string>
@@ -128,12 +128,6 @@
         <camunda:field name="processName">
           <camunda:string>customer_order_process</camunda:string>
         </camunda:field>
-        <camunda:field name="objectType">
-          <camunda:string>${objectType}</camunda:string>
-        </camunda:field>
-        <camunda:field name="objectPrincipal">
-          <camunda:string>${objectPrincipal}</camunda:string>
-        </camunda:field>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_45</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_46</bpmn2:outgoing>
@@ -146,12 +140,6 @@
         <camunda:field name="processName">
           <camunda:string>customer_order_process</camunda:string>
         </camunda:field>
-        <camunda:field name="objectType">
-          <camunda:string>${objectType}</camunda:string>
-        </camunda:field>
-        <camunda:field name="objectPrincipal">
-          <camunda:string>${objectPrincipal}</camunda:string>
-        </camunda:field>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_02drjpl</bpmn2:outgoing>
@@ -160,13 +148,6 @@
       <bpmn2:extensionElements>
         <camunda:field name="processName">
           <camunda:string>customer_order_process</camunda:string>
-        </camunda:field>
-        <camunda:field name="objectType">
-          <camunda:string><![CDATA[${objectType}
-]]></camunda:string>
-        </camunda:field>
-        <camunda:field name="objectPrincipal">
-          <camunda:string>${objectPrincipal}</camunda:string>
         </camunda:field>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_31</bpmn2:incoming>
@@ -183,7 +164,7 @@
           <camunda:string>opm_order_cancelled</camunda:string>
         </camunda:field>
         <camunda:field name="businessKey">
-          <camunda:string>${businessKey}</camunda:string>
+          <camunda:expression>${businessKey}</camunda:expression>
         </camunda:field>
         <camunda:field name="processName">
           <camunda:string>customer_order_process</camunda:string>
@@ -199,7 +180,7 @@
           <camunda:string>opm_order_fulfilled</camunda:string>
         </camunda:field>
         <camunda:field name="businessKey">
-          <camunda:string>${businessKey}</camunda:string>
+          <camunda:expression>${businessKey}</camunda:expression>
         </camunda:field>
         <camunda:field name="processName">
           <camunda:string>customer_order_process</camunda:string>
@@ -256,12 +237,6 @@
         <camunda:field name="processName">
           <camunda:string>production_process</camunda:string>
         </camunda:field>
-        <camunda:field name="objectType">
-          <camunda:string>${objectType}</camunda:string>
-        </camunda:field>
-        <camunda:field name="objectPrincipal">
-          <camunda:string>${objectPrincipal}</camunda:string>
-        </camunda:field>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_12</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_11</bpmn2:outgoing>
@@ -272,7 +247,7 @@
           <camunda:string>prpm_order_shipped</camunda:string>
         </camunda:field>
         <camunda:field name="businessKey">
-          <camunda:string>${businessKey}</camunda:string>
+          <camunda:expression>${businessKey}</camunda:expression>
         </camunda:field>
         <camunda:field name="processName">
           <camunda:string>production_process</camunda:string>
@@ -288,12 +263,6 @@
         </camunda:field>
         <camunda:field name="targetStatus">
           <camunda:string>${objectStatus}</camunda:string>
-        </camunda:field>
-        <camunda:field name="objectType">
-          <camunda:string>${objectType}</camunda:string>
-        </camunda:field>
-        <camunda:field name="objectPrincipal">
-          <camunda:string>${objectPrincipal}</camunda:string>
         </camunda:field>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_14</bpmn2:incoming>
@@ -317,12 +286,6 @@
       <bpmn2:extensionElements>
         <camunda:field name="processName">
           <camunda:string>production_process</camunda:string>
-        </camunda:field>
-        <camunda:field name="objectType">
-          <camunda:string>${objectType}</camunda:string>
-        </camunda:field>
-        <camunda:field name="objectPrincipal">
-          <camunda:string>${objectPrincipal}</camunda:string>
         </camunda:field>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_6</bpmn2:incoming>
@@ -367,7 +330,7 @@
           <camunda:string>mgtpm_order_released</camunda:string>
         </camunda:field>
         <camunda:field name="businessKey">
-          <camunda:string>${businessKey}</camunda:string>
+          <camunda:expression>${businessKey}</camunda:expression>
         </camunda:field>
         <camunda:field name="processName">
           <camunda:string>customer_order_management_process</camunda:string>
@@ -382,7 +345,7 @@
           <camunda:string>mgtpm__order_rejected</camunda:string>
         </camunda:field>
         <camunda:field name="businessKey">
-          <camunda:string>${businessKey}</camunda:string>
+          <camunda:expression>${businessKey}</camunda:expression>
         </camunda:field>
         <camunda:field name="processName">
           <camunda:string>customer_order_management_process</camunda:string>
@@ -398,12 +361,6 @@
         </camunda:field>
         <camunda:field name="processName">
           <camunda:string>customer_order_management_process</camunda:string>
-        </camunda:field>
-        <camunda:field name="objectType">
-          <camunda:string>${objectType}</camunda:string>
-        </camunda:field>
-        <camunda:field name="objectPrincipal">
-          <camunda:string>${objectPrincipal}</camunda:string>
         </camunda:field>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_10</bpmn2:incoming>
@@ -434,12 +391,6 @@
         <camunda:field name="targetStatus">
           <camunda:string>${objectStatus}</camunda:string>
         </camunda:field>
-        <camunda:field name="objectType">
-          <camunda:string>${objectType}</camunda:string>
-        </camunda:field>
-        <camunda:field name="objectPrincipal">
-          <camunda:string>${objectPrincipal}</camunda:string>
-        </camunda:field>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_2</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_3</bpmn2:outgoing>
@@ -466,12 +417,6 @@
       <bpmn2:extensionElements>
         <camunda:field name="processName">
           <camunda:string>customer_order_management_process</camunda:string>
-        </camunda:field>
-        <camunda:field name="objectType">
-          <camunda:string>${objectType}</camunda:string>
-        </camunda:field>
-        <camunda:field name="objectPrincipal">
-          <camunda:string>$[objectPrincipal}</camunda:string>
         </camunda:field>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_29</bpmn2:incoming>

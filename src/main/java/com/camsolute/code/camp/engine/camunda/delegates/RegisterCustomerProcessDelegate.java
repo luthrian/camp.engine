@@ -27,12 +27,9 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.engine.impl.persistence.entity.ExecutionEntity;
 
 import com.camsolute.code.camp.lib.models.customer.Customer;
-import com.camsolute.code.camp.lib.models.order.Order;
-import com.camsolute.code.camp.lib.models.order.OrderRest;
-import com.camsolute.code.camp.lib.models.process.CustomerProcess;
-import com.camsolute.code.camp.lib.models.process.OrderProcess;
 import com.camsolute.code.camp.lib.models.process.Process;
 import com.camsolute.code.camp.lib.models.process.ProcessRest;
+import com.camsolute.code.camp.lib.dao.HasProcessReference;
 import com.camsolute.code.camp.lib.utilities.Util;
 
 
@@ -46,6 +43,7 @@ public class RegisterCustomerProcessDelegate implements JavaDelegate {
     private Expression processName;
     private Expression targetStatus;
     
+	@SuppressWarnings("unchecked")
 	public void execute(DelegateExecution execution) throws Exception {
 		long startTime = System.currentTimeMillis();
 		String _f = null;
@@ -97,11 +95,14 @@ public class RegisterCustomerProcessDelegate implements JavaDelegate {
 		boolean ended = ((ExecutionEntity) execution).isEnded();
 		if(_DEBUG){msg = "----[ended('"+ended+"')]----";LOG.info(String.format(fmt, _f,msg));}
 
-		Process<Customer> process = new Process<Customer>(executionId, processInstanceId, businessKey, processName, definitionId,tenantId, caseInstanceId,ended,suspended,Process.ProcessType.customer_process);
+		
+		Process<?> process = new Process<>(Util.NEW_ID,executionId, processInstanceId, businessKey, processName, definitionId,tenantId, caseInstanceId,ended,suspended,Process.ProcessType.customer_process);
 		
 		ProcessRest.instance().save(process, !Util._IN_PRODUCTION);
+		//TODO: this is ugly ... plan is to use objctType to have a single RegisterProcessDelegate 
+		((HasProcessReference)Class.forName(objectType+"Rest").getDeclaredMethod("instance").invoke(null)).addProcessReference(objectBusinessId, processInstanceId, businessKey, !Util._IN_PRODUCTION);
 		
-//TODO: customer stuff		CustomerRest.instance().addProcessReference(objectBusinessId, processInstanceId, businessKey, !Util._IN_PRODUCTION);
+		//TODO: customer stuff		CustomerRest.instance().addProcessReference(objectBusinessId, processInstanceId, businessKey, !Util._IN_PRODUCTION);
 		
 		if(_DEBUG) {
 			String time = "[ExecutionTime:"+(System.currentTimeMillis()-startTime)+")]====";
