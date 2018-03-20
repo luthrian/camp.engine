@@ -45,7 +45,6 @@ public class RegisterCustomerProcessDelegate implements JavaDelegate {
 	
     private Expression processName;
     private Expression targetStatus;
-
     
 	public void execute(DelegateExecution execution) throws Exception {
 		long startTime = System.currentTimeMillis();
@@ -61,6 +60,12 @@ public class RegisterCustomerProcessDelegate implements JavaDelegate {
 		
 		String objectId = (String) execution.getVariable("objectId");
 		if(_DEBUG){msg = "----[objectId('"+objectId+"') ]----";LOG.info(String.format(fmt, _f,msg));}
+		
+		String objectType = (String) execution.getVariable("objectType");
+		if(_DEBUG){msg = "----[objectType('"+objectType+"') ]----";LOG.info(String.format(fmt, _f,msg));}
+		
+		String objectPrincipal = (String) execution.getVariable("objectPrincipal");
+		if(_DEBUG){msg = "----[objectPrincipal('"+objectPrincipal+"') ]----";LOG.info(String.format(fmt, _f,msg));}
 		
 		String objectStatus = (String) execution.getVariable("objectStatus");
 		if(_DEBUG){msg = "----[objectStatus('"+objectStatus+"')]----";LOG.info(String.format(fmt, _f,msg));}

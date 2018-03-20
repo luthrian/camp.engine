@@ -73,6 +73,12 @@ public class RegisterProductionProcessDelegate implements JavaDelegate {
 		String objectBusinessId = (String) execution.getVariable("objectBusinessId");
 		String objectId = (String) execution.getVariable("objectId");
 		String objectStatus = (String) execution.getVariable("objectStatus");
+		String objectType = (String) execution.getVariable("objectType");
+		if(_DEBUG){msg = "----[objectType('"+objectType+"') ]----";LOG.info(String.format(fmt, _f,msg));}
+		
+		String objectPrincipal = (String) execution.getVariable("objectPrincipal");
+		if(_DEBUG){msg = "----[objectPrincipal('"+objectPrincipal+"') ]----";LOG.info(String.format(fmt, _f,msg));}
+		
 //		String activityId = ((ExecutionEntity) execution).getActivityId();
 		String processName = (String) getProcessName().getValue(execution);
 		String tenantId =((ExecutionEntity) execution).getTenantId();

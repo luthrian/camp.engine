@@ -32,11 +32,10 @@ import com.camsolute.code.camp.lib.models.order.OrderRest;
 import com.camsolute.code.camp.lib.models.order.Order;
 import com.camsolute.code.camp.lib.models.order.Order.UpdateAttribute;
 import com.camsolute.code.camp.lib.models.process.Process;
+import com.camsolute.code.camp.lib.utilities.Util;
 
 
 public class OrderShippedDelegate implements JavaDelegate {
-	public static final boolean _DEBUG = true;
-	public static final boolean _IN_PRODUCTION = false;
 	private static final Logger LOG = LogManager.getLogger(OrderShippedDelegate.class);
 	private static String fmt = "[%15s] [%s]";
 	
@@ -60,34 +59,37 @@ public class OrderShippedDelegate implements JavaDelegate {
 		this.processName = processName;
 	}
 
-	public void execute(DelegateExecution execution) throws Exception {_execute(execution,true);}
-	public void _execute(DelegateExecution execution,boolean log){
+	public void execute(DelegateExecution execution) throws Exception {
 		long startTime = System.currentTimeMillis();
 		String targetStatus = (String) this.targetStatus.getValue(execution);
 		String _f = null;
 		String msg = null;
-		if(log && _DEBUG) {
+		if(!Util._IN_PRODUCTION) {
 			_f = "[_execute]";
 			msg = "====[ handling order update (shipped) event: updating status to '"+targetStatus+"']====";LOG.traceEntry(String.format(fmt,_f,msg));
 		}
 		String objectBusinessId = (String) execution.getVariable("objectBusinessId");
 		String objectId = (String) execution.getVariable("objectId");
 		String objectStatus = (String) execution.getVariable("objectStatus");
+		String objectType = (String) execution.getVariable("objectType");
+		String objectPrincipal = (String) execution.getVariable("objectPrincipal");
 		String businessKey = ((ExecutionEntity) execution).getBusinessKey();
 		String activityId = ((ExecutionEntity) execution).getActivityId();
 		String processInstanceId = ((ExecutionEntity) execution).getProcessInstanceId();
 		
-		if(log && _DEBUG){msg = "----[objectBusinessId '"+objectBusinessId+"']----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && _DEBUG){msg = "----[objectId '"+objectId+"']----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && _DEBUG){msg = "----[objectStatus '"+objectStatus+"']----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && _DEBUG){msg = "----[businessKey '"+businessKey+"']----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && _DEBUG){msg = "----[activityId '"+activityId+"']----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && _DEBUG){msg = "----[processInstanceId '"+processInstanceId+"']----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && _DEBUG){msg = "----[targetStatus '"+targetStatus+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[objectBusinessId '"+objectBusinessId+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[objectId '"+objectId+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[objectStatus '"+objectStatus+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[objectType '"+objectType+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[objectPrincipal '"+objectPrincipal+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[businessKey '"+businessKey+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[activityId '"+activityId+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[processInstanceId '"+processInstanceId+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[targetStatus '"+targetStatus+"']----";LOG.info(String.format(fmt, _f,msg));}
 		
 //		Order order = OrderRestDao.instance()._load(objectBusinessId, log);
 		
-		Order o = OrderRest.instance().updateAttribute(UpdateAttribute.STATUS, objectBusinessId, targetStatus, log);
+		Order o = OrderRest.instance().updateAttribute(UpdateAttribute.STATUS, objectBusinessId, targetStatus, !Util._IN_PRODUCTION);
 		//FIXME: TODO: set variable in all relevant order process instances via o.observerProcesses and correlating the appropriate processes
 /* something like this but instanceId must be executionId
 		for(OrderProcess op:o.observerProcesses().toList().value()) {
@@ -98,13 +100,13 @@ public class OrderShippedDelegate implements JavaDelegate {
 */
 		//		execution.setVariable("objectId", String.valueOf(o.id())); 
 //		
-//			if(log && _DEBUG){msg = "----[updated objectId('"+o.id()+"')]----";LOG.info(String.format(fmt, _f,msg));}
+//			if(!Util._IN_PRODUCTION){msg = "----[updated objectId('"+o.id()+"')]----";LOG.info(String.format(fmt, _f,msg));}
 //		
 //		execution.setVariable("objectStatus", o.status().name());
 //		
-//			if(log && _DEBUG){msg = "----[updated objectStatus('"+o.status().name()+"')]----";LOG.info(String.format(fmt, _f,msg));}
+//			if(!Util._IN_PRODUCTION){msg = "----[updated objectStatus('"+o.status().name()+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		
-		if(log && _DEBUG) {
+		if(!Util._IN_PRODUCTION) {
 			String time = "[ExecutionTime:"+(System.currentTimeMillis()-startTime)+")]====";
 			msg = "====[_execute completed.]====";LOG.info(String.format(fmt,("<<<<<<<<<"+_f).toUpperCase(),msg+time));
 		}

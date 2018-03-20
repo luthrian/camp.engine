@@ -23,6 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.camunda.bpm.engine.impl.persistence.entity.ExecutionEntity;
 
 import com.camsolute.code.camp.lib.utilities.Util;
 
@@ -40,13 +41,38 @@ public class LoggerDelegate implements JavaDelegate {
 			_f = "[_execute]";
 			msg = "====[ Logger delegate executed ]====";LOG.traceEntry(String.format(fmt,_f,msg));
 		}
+		String objectBusinessId = (String) execution.getVariable("objectBusinessId");
+		String objectId = (String) execution.getVariable("objectId");
+		String objectStatus = (String) execution.getVariable("objectStatus");
+		String objectType = (String) execution.getVariable("objectType");
+		String objectPrincipal = (String) execution.getVariable("objectPrincipal");
+		String processBusinessKey = ((ExecutionEntity) execution).getProcessBusinessKey();
+		String processInstanceId = ((ExecutionEntity) execution).getProcessInstanceId();
+		String executionId = ((ExecutionEntity) execution).getId();
+		String businessKey = ((ExecutionEntity) execution).getBusinessKey();
+		String tenantId = ((ExecutionEntity) execution).getTenantId();
+		String caseInstanceId = ((ExecutionEntity) execution).getCaseInstanceId();
+		String definitionId = ((ExecutionEntity) execution).getProcessDefinitionId();
+		boolean suspended = ((ExecutionEntity) execution).isSuspended();
+		boolean ended = ((ExecutionEntity) execution).isEnded();
+		String activityId = ((ExecutionEntity) execution).getActivityId();
 		
-		if(log && !Util._IN_PRODUCTION){msg = "----[processDefinitionId=" + execution.getProcessDefinitionId()+"]----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && !Util._IN_PRODUCTION){msg = "----[activtyId=" + execution.getCurrentActivityId()+"]----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && !Util._IN_PRODUCTION){msg = "----[activtyName='" + execution.getCurrentActivityName() + "']----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && !Util._IN_PRODUCTION){msg = "----[processInstanceId=" + execution.getProcessInstanceId()+"]----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && !Util._IN_PRODUCTION){msg = "----[businessKey=" + execution.getProcessBusinessKey()+"]----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && !Util._IN_PRODUCTION){msg = "----[executionId=" + execution.getId()+"]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[objectBusinessId('"+objectBusinessId+"') ]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[objectId('"+objectId+"') ]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[objectStatus('"+objectStatus+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[objectType('"+objectType+"') ]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[objectPrincipal('"+objectPrincipal+"') ]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[processBusinessKey('"+processBusinessKey+"') ]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[activityId('"+activityId+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[executionId('"+executionId+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[processInstanceId('"+processInstanceId+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[businessKey('"+businessKey+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[tenantId('"+tenantId+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[caseInstanceId('"+caseInstanceId+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[definitionId('"+definitionId+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[suspended('"+suspended+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[ended('"+ended+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		
 		
 		if(log && !Util._IN_PRODUCTION) {
 			String time = "[ExecutionTime:"+(System.currentTimeMillis()-startTime)+")]====";

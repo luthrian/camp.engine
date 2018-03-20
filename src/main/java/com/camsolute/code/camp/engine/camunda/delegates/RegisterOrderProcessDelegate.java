@@ -63,6 +63,12 @@ public class RegisterOrderProcessDelegate implements JavaDelegate {
 		if(_DEBUG){msg = "----[objectBusinessId('"+objectBusinessId+"') ]----";LOG.info(String.format(fmt, _f,msg));}
 		String objectId = (String) execution.getVariable("objectId");
 		if(_DEBUG){msg = "----[objectId('"+objectId+"') ]----";LOG.info(String.format(fmt, _f,msg));}
+		String objectType = (String) execution.getVariable("objectType");
+		if(_DEBUG){msg = "----[objectType('"+objectType+"') ]----";LOG.info(String.format(fmt, _f,msg));}
+		
+		String objectPrincipal = (String) execution.getVariable("objectPrincipal");
+		if(_DEBUG){msg = "----[objectPrincipal('"+objectPrincipal+"') ]----";LOG.info(String.format(fmt, _f,msg));}
+		
 		String objectStatus = (String) execution.getVariable("objectStatus");
 		if(_DEBUG){msg = "----[objectStatus('"+objectStatus+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		String processName = (String) getProcessName().getValue(execution);

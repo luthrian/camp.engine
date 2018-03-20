@@ -57,14 +57,13 @@ public class OrderUpdateDelegate implements JavaDelegate {
 		this.processName = processName;
 	}
 
-	public void execute(DelegateExecution execution) throws Exception {_execute(execution,true);}
-	public void _execute(DelegateExecution execution,boolean log){
+	public void execute(DelegateExecution execution) throws Exception {
 		long startTime = System.currentTimeMillis();
 		String targetStatus = (String) execution.getVariable("objectStatus");
 //		String targetStatus = (String) this.targetStatus.getValue(execution);
 		String _f = null;
 		String msg = null;
-		if(log && !Util._IN_PRODUCTION) {
+		if(!Util._IN_PRODUCTION) {
 			_f = "[_execute]";
 			msg = "====[ handling order update event: updating status to '"+targetStatus+"']====";LOG.traceEntry(String.format(fmt,(_f+">>>>>>>>>").toUpperCase(),msg));
 		}
@@ -72,20 +71,24 @@ public class OrderUpdateDelegate implements JavaDelegate {
 		String objectBusinessId = (String) execution.getVariable("objectBusinessId");
 		String objectId = (String) execution.getVariable("objectId");
 		String objectStatus = (String) execution.getVariable("objectStatus");
+		String objectType = (String) execution.getVariable("objectType");
+		String objectPrincipal = (String) execution.getVariable("objectPrincipal");
 		String activityId = ((ExecutionEntity) execution).getActivityId();
 		String businessKey = ((ExecutionEntity) execution).getBusinessKey();
 		String processInstanceId = ((ExecutionEntity) execution).getProcessInstanceId();
 		
 		
-		if(log && !Util._IN_PRODUCTION){msg = "----[objectBusinessId '"+objectBusinessId+"']----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && !Util._IN_PRODUCTION){msg = "----[objectId '"+objectId+"']----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && !Util._IN_PRODUCTION){msg = "----[objectStatus '"+objectStatus+"']----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && !Util._IN_PRODUCTION){msg = "----[businessKey '"+businessKey+"']----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && !Util._IN_PRODUCTION){msg = "----[activityId '"+activityId+"']----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && !Util._IN_PRODUCTION){msg = "----[processInstanceId '"+processInstanceId+"']----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && !Util._IN_PRODUCTION){msg = "----[targetStatus '"+targetStatus+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[objectBusinessId '"+objectBusinessId+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[objectId '"+objectId+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[objectStatus '"+objectStatus+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[objectType '"+objectType+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[objectPrincipal '"+objectPrincipal+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[businessKey '"+businessKey+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[activityId '"+activityId+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[processInstanceId '"+processInstanceId+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[targetStatus '"+targetStatus+"']----";LOG.info(String.format(fmt, _f,msg));}
 		
-		Order o = OrderRest.instance().updateAttribute(UpdateAttribute.STATUS, objectBusinessId, targetStatus, log);
+		Order o = OrderRest.instance().updateAttribute(UpdateAttribute.STATUS, objectBusinessId, targetStatus, !Util._IN_PRODUCTION);
 		//FIXME: TODO: set variable in all relevant order process instances via o.observerProcesses and correlating the appropriate processes
 /* something like this but instanceId must be executionId if they are not the same thing
 		for(OrderProcess op:o.observerProcesses().toList().value()) {
@@ -96,12 +99,12 @@ public class OrderUpdateDelegate implements JavaDelegate {
 */
 
 //		execution.setVariable("objectId", String.valueOf(o.id()));
-//		if(log && !Util._IN_PRODUCTION){msg = "----[updated objectId('"+o.id()+"')]----";LOG.info(String.format(fmt, _f,msg));}
+//		if(!Util._IN_PRODUCTION){msg = "----[updated objectId('"+o.id()+"')]----";LOG.info(String.format(fmt, _f,msg));}
 //		execution.setVariable("objectStatus", o.status().name());
-//		if(log && !Util._IN_PRODUCTION){msg = "----[updated objectStatus('"+o.status().name()+"')]----";LOG.info(String.format(fmt, _f,msg));}
+//		if(!Util._IN_PRODUCTION){msg = "----[updated objectStatus('"+o.status().name()+"')]----";LOG.info(String.format(fmt, _f,msg));}
 
 		
-		if(log && !Util._IN_PRODUCTION) {
+		if(!Util._IN_PRODUCTION) {
 			String time = "[ExecutionTime:"+(System.currentTimeMillis()-startTime)+")]====";
 			msg = "====[_execute completed.]====";LOG.info(String.format(fmt,("<<<<<<<<<"+_f).toUpperCase(),msg+time));
 		}

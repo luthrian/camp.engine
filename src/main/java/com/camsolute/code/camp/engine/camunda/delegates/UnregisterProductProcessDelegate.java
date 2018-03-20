@@ -21,6 +21,8 @@ package com.camsolute.code.camp.engine.camunda.delegates;
 
 import java.text.SimpleDateFormat;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.Expression;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
@@ -34,12 +36,10 @@ import com.camsolute.code.camp.lib.utilities.Util;
 
 
 public class UnregisterProductProcessDelegate implements JavaDelegate {
-//    private ObjectMapper mapper;
-//    private PostRestClient postClient;
-//    private GetRestClient getClient;
-//    private String json;
-//    private String result;
-    private Expression processName;
+	private static final Logger LOG = LogManager.getLogger(UnregisterProductProcessDelegate.class);
+	private static String fmt = "[%15s] [%s]";
+	
+  private Expression processName;
 
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
@@ -49,6 +49,8 @@ public class UnregisterProductProcessDelegate implements JavaDelegate {
 		String objectBusinessId = (String) execution.getVariable("objectBusinessId");
 		String objectId = (String) execution.getVariable("objectId");
 		String objectStatus = (String) execution.getVariable("objectStatus");
+		String objectType = (String) execution.getVariable("objectType");
+		String objectPrincipal = (String) execution.getVariable("objectPrincipal");
 		String processName = (String) getProcessName().getValue(execution);
 		String processInstanceId = ((ExecutionEntity) execution).getProcessInstanceId();
 		String businessKey = ((ExecutionEntity) execution).getBusinessKey();
@@ -59,6 +61,21 @@ public class UnregisterProductProcessDelegate implements JavaDelegate {
 		boolean ended = ((ExecutionEntity) execution).isEnded();
 		String executionId = ((ExecutionEntity) execution).getId();
 //		Process<Product,ProductProcess> process = new Process<Product,ProductProcess>(executionId, processInstanceId, businessKey, processName, definitionId,tenantId, caseInstanceId,ended,suspended,Process.ProcessType.product_process);
+		if(!Util._IN_PRODUCTION){String msg = "----[objectBusinessId '"+objectBusinessId+"']----";LOG.info(String.format(fmt, "execute",msg));}
+		if(!Util._IN_PRODUCTION){String msg = "----[objectId '"+objectId+"']----";LOG.info(String.format(fmt, "execute",msg));}
+		if(!Util._IN_PRODUCTION){String msg = "----[objectStatus '"+objectStatus+"']----";LOG.info(String.format(fmt, "execute",msg));}
+		if(!Util._IN_PRODUCTION){String msg = "----[objectType('"+objectType+"') ]----";LOG.info(String.format(fmt, "execute",msg));}
+		if(!Util._IN_PRODUCTION){String msg = "----[objectPrincipal('"+objectPrincipal+"') ]----";LOG.info(String.format(fmt, "execute",msg));}
+		if(!Util._IN_PRODUCTION){String msg = "----[businessKey '"+businessKey+"']----";LOG.info(String.format(fmt, "execute",msg));}
+		if(!Util._IN_PRODUCTION){String msg = "----[processName '"+processName+"']----";LOG.info(String.format(fmt, "execute",msg));}
+		if(!Util._IN_PRODUCTION){String msg = "----[processInstanceId '"+processInstanceId+"']----";LOG.info(String.format(fmt, "execute",msg));}
+		if(!Util._IN_PRODUCTION){String msg = "----[executionId '"+executionId+"']----";LOG.info(String.format(fmt, "execute",msg));}
+		if(!Util._IN_PRODUCTION){String msg = "----[tenantId '"+tenantId+"']----";LOG.info(String.format(fmt, "execute",msg));}
+		if(!Util._IN_PRODUCTION){String msg = "----[caseInstanceId '"+caseInstanceId+"']----";LOG.info(String.format(fmt, "execute",msg));}
+		if(!Util._IN_PRODUCTION){String msg = "----[definitionId '"+definitionId+"']----";LOG.info(String.format(fmt, "execute",msg));}
+		if(!Util._IN_PRODUCTION){String msg = "----[ended '"+ended+"']----";LOG.info(String.format(fmt, "execute",msg));}
+		if(!Util._IN_PRODUCTION){String msg = "----[suspended '"+suspended+"']----";LOG.info(String.format(fmt, "execute",msg));}
+
 		
 //		ProductProcessRestDao.instance().registerProcess(orderNumber, process);
 		ProductRest.instance().delProcessReference(objectBusinessId, processInstanceId, businessKey, !Util._IN_PRODUCTION);

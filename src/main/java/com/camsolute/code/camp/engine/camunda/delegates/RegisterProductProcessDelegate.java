@@ -46,6 +46,9 @@ public class RegisterProductProcessDelegate implements JavaDelegate {
 		String objectBusinessId = (String) execution.getVariable("objectBusinessId");
 		String objectId = (String) execution.getVariable("objectId");
 		String objectStatus = (String) execution.getVariable("objectStatus");
+		String objectType = (String) execution.getVariable("objectType");
+		String objectPrincipal = (String) execution.getVariable("objectPrincipal");
+		
 		String processName = (String) getProcessName().getValue(execution);
 //		String activityId = ((ExecutionEntity) execution).getActivityId();
 		String processInstanceId = ((ExecutionEntity) execution).getProcessInstanceId();

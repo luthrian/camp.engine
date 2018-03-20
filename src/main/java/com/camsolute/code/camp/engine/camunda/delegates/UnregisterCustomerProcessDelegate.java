@@ -49,6 +49,8 @@ public class UnregisterCustomerProcessDelegate implements JavaDelegate {
 		String objectBusinessId = (String) execution.getVariable("objectBusinessId");
 		String objectId = String.valueOf((Integer) execution.getVariable("objectId"));
 		String objectStatus = (String) execution.getVariable("objectStatus");
+		String objectType = (String) execution.getVariable("objectType");
+		String objectPrincipal = (String) execution.getVariable("objectPrincipal");
 		String processName = ((ExecutionEntity) execution).getActivity().getProcessDefinition().getProcessDefinition().getName();
 		String processInstanceId = ((ExecutionEntity) execution).getProcessInstanceId();
 		String businessKey = ((ExecutionEntity) execution).getBusinessKey();
@@ -62,6 +64,8 @@ public class UnregisterCustomerProcessDelegate implements JavaDelegate {
 		if(_DEBUG){msg = "----[objectBusinessId('"+objectBusinessId+"') ]----";LOG.info(String.format(fmt, _f,msg));}
 		if(_DEBUG){msg = "----[objectId('"+objectId+"') ]----";LOG.info(String.format(fmt, _f,msg));}
 		if(_DEBUG){msg = "----[objectStatus('"+objectStatus+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		if(_DEBUG){msg = "----[objectType('"+objectType+"') ]----";LOG.info(String.format(fmt, _f,msg));}
+		if(_DEBUG){msg = "----[objectPrincipal('"+objectPrincipal+"') ]----";LOG.info(String.format(fmt, _f,msg));}
 		if(_DEBUG){msg = "----[processName('"+processName+"') ]----";LOG.info(String.format(fmt, _f,msg));}
 		if(_DEBUG){msg = "----[executionId('"+executionId+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		if(_DEBUG){msg = "----[processInstanceId('"+processInstanceId+"')]----";LOG.info(String.format(fmt, _f,msg));}

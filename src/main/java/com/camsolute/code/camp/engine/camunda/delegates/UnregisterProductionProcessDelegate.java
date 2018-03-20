@@ -35,12 +35,11 @@ import com.camsolute.code.camp.lib.models.process.ProcessRest;
 import com.camsolute.code.camp.lib.models.process.ProductProcess;
 import com.camsolute.code.camp.lib.models.process.ProductionProcess;
 import com.camsolute.code.camp.lib.models.product.Product;
+import com.camsolute.code.camp.lib.utilities.Util;
 
 
 
 public class UnregisterProductionProcessDelegate implements JavaDelegate {
-	public static final boolean _DEBUG = true;
-	public static final boolean _IN_PRODUCTION = false;
 	private static final Logger LOG = LogManager.getLogger(UnregisterProductionProcessDelegate.class);
 	private static String fmt = "[%15s] [%s]";
 	
@@ -60,12 +59,11 @@ public class UnregisterProductionProcessDelegate implements JavaDelegate {
 	public Expression getProcessName() {
 		return this.processName;
 	}
-	public void execute(DelegateExecution execution) throws Exception {_execute(execution,true);}
-	public void _execute(DelegateExecution execution,boolean log){
+	public void execute(DelegateExecution execution) throws Exception {
 		long startTime = System.currentTimeMillis();
 		String _f = null;
 		String msg = null;
-		if(log && _DEBUG) {
+		if(!Util._IN_PRODUCTION) {
 			_f = "[_execute]";
 			msg = "====[ registering production process: ]====";LOG.traceEntry(String.format(fmt,_f,msg));
 		}
@@ -73,8 +71,13 @@ public class UnregisterProductionProcessDelegate implements JavaDelegate {
 		String objectBusinessId = (String) execution.getVariable("objectBusinessId");
 		String objectId = (String) execution.getVariable("objectId");
 		String objectStatus = (String) execution.getVariable("objectStatus");
+		String objectType = (String) execution.getVariable("objectType");
+		
+		String objectPrincipal = (String) execution.getVariable("objectPrincipal");
+		
 //		String activityId = ((ExecutionEntity) execution).getActivityId();
 		String processName = (String) getProcessName().getValue(execution);
+		String executionId = ((ExecutionEntity) execution).getId();
 		String tenantId =((ExecutionEntity) execution).getTenantId();
 		String caseInstanceId = ((ExecutionEntity) execution).getCaseInstanceId(); 
 		String processInstanceId = ((ExecutionEntity) execution).getProcessInstanceId();
@@ -82,17 +85,24 @@ public class UnregisterProductionProcessDelegate implements JavaDelegate {
 		String definitionId = ((ExecutionEntity) execution).getProcessDefinitionId();
 		boolean ended = ((ExecutionEntity) execution).isEnded();
 		boolean suspended = ((ExecutionEntity) execution).isSuspended();
-		String executionId = ((ExecutionEntity) execution).getId();
 //		Process<Order,ProductionProcess> process = new Process<Order,ProductionProcess>(executionId, processInstanceId, businessKey, processName, definitionId,tenantId, caseInstanceId,ended,suspended,Process.ProcessType.product_process);
 		
-		if(log && _DEBUG){msg = "----[objectBusinessId '"+objectBusinessId+"']----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && _DEBUG){msg = "----[objectId '"+objectId+"']----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && _DEBUG){msg = "----[objectStatus '"+objectStatus+"']----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && _DEBUG){msg = "----[businessKey '"+businessKey+"']----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && _DEBUG){msg = "----[processInstanceId '"+processInstanceId+"']----";LOG.info(String.format(fmt, _f,msg));}
-		if(log && _DEBUG){msg = "----[processName '"+processName+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[objectBusinessId '"+objectBusinessId+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[objectId '"+objectId+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[objectStatus '"+objectStatus+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[objectType('"+objectType+"') ]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[objectPrincipal('"+objectPrincipal+"') ]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[businessKey '"+businessKey+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[processName '"+processName+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[processInstanceId '"+processInstanceId+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[executionId '"+executionId+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[tenantId '"+tenantId+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[caseInstanceId '"+caseInstanceId+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[definitionId '"+definitionId+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[ended '"+ended+"']----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[suspended '"+suspended+"']----";LOG.info(String.format(fmt, _f,msg));}
 
-		OrderRest.instance().delProcessReference(objectBusinessId, processInstanceId, businessKey, log);
+		OrderRest.instance().delProcessReference(objectBusinessId, processInstanceId, businessKey, !Util._IN_PRODUCTION);
 	}
 
 }
