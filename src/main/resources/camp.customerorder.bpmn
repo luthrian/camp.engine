@@ -1,25 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-#-------------------------------------------------------------------------------
-# Copyright (C) 2018 Christopher Campbell (campbellccc@gmail.com)
-# 
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-# 
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-# 
-# Contributors:
-# 	Christopher Campbell (campbellccc@gmail.com) - all code prior and post initial release
-#-------------------------------------------------------------------------------
-//-->
 <bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="_OzsbsMu3EeOdIoWZ6R3itw" targetNamespace="http://camunda.org/schema/1.0/bpmn" exporter="Camunda Modeler" exporterVersion="1.11.3" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <bpmn2:collaboration id="_Collaboration_3">
     <bpmn2:participant id="_Customer" name="Customer" processRef="process.name.Order.Customer">
@@ -65,7 +44,7 @@
             <camunda:value id="SUBMITTED" name="Order Submitted" />
           </camunda:formField>
         </camunda:formData>
-        <camunda:taskListener class="com.camsolute.code.camp.modules.pe.camunda.event.SendMessageTaskListener" event="complete" />
+        <camunda:taskListener class="com.camsolute.code.camp.engine.camunda.event.SendMessageTaskListener" event="complete" />
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_21</bpmn2:incoming>
       <bpmn2:incoming>SequenceFlow_02drjpl</bpmn2:incoming>
@@ -262,7 +241,7 @@
       <bpmn2:incoming>SequenceFlow_12</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_11</bpmn2:outgoing>
     </bpmn2:serviceTask>
-    <bpmn2:sendTask id="SendTask_OrderShippedMessage" name="Order Shipped Message" camunda:class="com.camsolute.code.camp.modules.pe.camunda.delegates.OrderMessengerDelegate">
+    <bpmn2:sendTask id="SendTask_OrderShippedMessage" name="Order Shipped Message" camunda:class="com.camsolute.code.camp.engine.camunda.delegates.OrderMessengerDelegate">
       <bpmn2:extensionElements>
         <camunda:field name="messageName">
           <camunda:string>prpm_order_shipped</camunda:string>
@@ -303,7 +282,7 @@
     <bpmn2:endEvent id="EndEvent_2" name="Production Order &#10;Completed">
       <bpmn2:incoming>SequenceFlow_1cclgoz</bpmn2:incoming>
     </bpmn2:endEvent>
-    <bpmn2:serviceTask id="ServiceTask_UnregisterProductionProcess1" name="Unregister Production Process" camunda:class="com.camsolute.code.camp.modules.pe.camunda.delegates.UnregisterProductionProcessDelegate">
+    <bpmn2:serviceTask id="ServiceTask_UnregisterProductionProcess1" name="Unregister Production Process" camunda:class="com.camsolute.code.camp.engine.camunda.delegates.UnregisterProductionProcessDelegate">
       <bpmn2:extensionElements>
         <camunda:field name="processName">
           <camunda:string>production_process</camunda:string>
@@ -360,7 +339,7 @@
       <bpmn2:incoming>SequenceFlow_23</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_16</bpmn2:outgoing>
     </bpmn2:sendTask>
-    <bpmn2:sendTask id="SendTask_OrderRejected" name="Order Rejected" camunda:class="com.camsolute.code.camp.modules.pe.camunda.delegates.OrderMessengerDelegate">
+    <bpmn2:sendTask id="SendTask_OrderRejected" name="Order Rejected" camunda:class="com.camsolute.code.camp.engine.camunda.delegates.OrderMessengerDelegate">
       <bpmn2:extensionElements>
         <camunda:field name="messageName">
           <camunda:string>mgtpm__order_rejected</camunda:string>
@@ -434,7 +413,7 @@
     <bpmn2:sequenceFlow id="SequenceFlow_11d40md" sourceRef="ServiceTask_UnregisterCustomerOrderManagementProcess" targetRef="EndEvent_4" />
     <bpmn2:sequenceFlow id="SequenceFlow_29" name="" sourceRef="SendTask_OrderRejected" targetRef="ServiceTask_UnregisterCustomerOrderManagementProcess" />
     <bpmn2:sequenceFlow id="SequenceFlow_16" name="" sourceRef="SendTask_OrderReleasedToProduction" targetRef="ServiceTask_UnregisterCustomerOrderManagementProcess" />
-    <bpmn2:serviceTask id="ServiceTask_UnregisterCustomerOrderManagementProcess" name="Unregister Customer Order Management Process" camunda:class="com.camsolute.code.camp.modules.pe.camunda.delegates.UnregisterOrderProcessDelegate">
+    <bpmn2:serviceTask id="ServiceTask_UnregisterCustomerOrderManagementProcess" name="Unregister Customer Order Management Process" camunda:class="com.camsolute.code.camp.engine.camunda.delegates.UnregisterOrderProcessDelegate">
       <bpmn2:extensionElements>
         <camunda:field name="processName">
           <camunda:string>customer_order_management_process</camunda:string>
