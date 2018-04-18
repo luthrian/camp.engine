@@ -27,6 +27,7 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.engine.impl.persistence.entity.ExecutionEntity;
 
 import com.camsolute.code.camp.lib.models.customer.Customer;
+import com.camsolute.code.camp.lib.models.customer.CustomerRest;
 import com.camsolute.code.camp.lib.models.process.Process;
 import com.camsolute.code.camp.lib.models.process.ProcessRest;
 import com.camsolute.code.camp.lib.dao.HasProcessReference;
@@ -34,11 +35,9 @@ import com.camsolute.code.camp.lib.utilities.Util;
 
 
 public class RegisterCustomerProcessDelegate implements JavaDelegate {
-	public static final String _F = "["+RegisterCustomerProcessDelegate.class.getSimpleName()+"]";
-	public static final boolean _DEBUG = true;
+	private static final Logger LOG = LogManager.getLogger(RegisterCustomerProcessDelegate.class);
 	private static String fmt = "[%15s] [%s]";
-	public static final boolean _IN_PRODUCTION = false;
-    private static final Logger LOG = LogManager.getLogger("RegisterCustomerProcessDelegate");
+	
 	
     private Expression processName;
     private Expression targetStatus;
@@ -48,63 +47,65 @@ public class RegisterCustomerProcessDelegate implements JavaDelegate {
 		long startTime = System.currentTimeMillis();
 		String _f = null;
 		String msg = null;
-		if(_DEBUG) {
+		if(!Util._IN_PRODUCTION) {
 			_f = "[execute]";
-			msg = "====[ camunda pe: registering new customer order process. ]====";LOG.info(String.format(fmt,(_f+">>>>>>>>>").toUpperCase(),msg));
+			msg = "====[ registering customer order process: ]====";LOG.traceEntry(String.format(fmt,(_f+">>>>>>>>>").toUpperCase(),msg));
 		}
 		
 		String objectBusinessId = (String) execution.getVariable("objectBusinessId");
-		if(_DEBUG){msg = "----[objectBusinessId('"+objectBusinessId+"') ]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[objectBusinessId('"+objectBusinessId+"') ]----";LOG.info(String.format(fmt, _f,msg));}
 		
 		String objectId = (String) execution.getVariable("objectId");
-		if(_DEBUG){msg = "----[objectId('"+objectId+"') ]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[objectId('"+objectId+"') ]----";LOG.info(String.format(fmt, _f,msg));}
 		
 		String objectType = (String) execution.getVariable("objectType");
-		if(_DEBUG){msg = "----[objectType('"+objectType+"') ]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[objectType('"+objectType+"') ]----";LOG.info(String.format(fmt, _f,msg));}
 		
 		String objectPrincipal = (String) execution.getVariable("objectPrincipal");
-		if(_DEBUG){msg = "----[objectPrincipal('"+objectPrincipal+"') ]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[objectPrincipal('"+objectPrincipal+"') ]----";LOG.info(String.format(fmt, _f,msg));}
 		
 		String objectStatus = (String) execution.getVariable("objectStatus");
-		if(_DEBUG){msg = "----[objectStatus('"+objectStatus+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[objectStatus('"+objectStatus+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		
 		String processName = ((ExecutionEntity) execution).getActivity().getProcessDefinition().getProcessDefinition().getName();
-		if(_DEBUG){msg = "----[processName('"+processName+"') ]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[processName('"+processName+"') ]----";LOG.info(String.format(fmt, _f,msg));}
 		
 		String processInstanceId = ((ExecutionEntity) execution).getProcessInstanceId();
-		if(_DEBUG){msg = "----[processInstanceId('"+processInstanceId+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[processInstanceId('"+processInstanceId+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		
 		String executionId = ((ExecutionEntity) execution).getId();
-		if(_DEBUG){msg = "----[executionId('"+executionId+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[executionId('"+executionId+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		
 		String businessKey = ((ExecutionEntity) execution).getBusinessKey();
-		if(_DEBUG){msg = "----[businessKey('"+businessKey+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[businessKey('"+businessKey+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		
 		String tenantId = ((ExecutionEntity) execution).getTenantId();
-		if(_DEBUG){msg = "----[tenantId('"+tenantId+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[tenantId('"+tenantId+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		
 		String caseInstanceId = ((ExecutionEntity) execution).getCaseInstanceId();
-		if(_DEBUG){msg = "----[caseInstanceId('"+caseInstanceId+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[caseInstanceId('"+caseInstanceId+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		
 		String definitionId = ((ExecutionEntity) execution).getProcessDefinitionId();
-		if(_DEBUG){msg = "----[definitionId('"+definitionId+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[definitionId('"+definitionId+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		
 		boolean suspended = ((ExecutionEntity) execution).isSuspended();
-		if(_DEBUG){msg = "----[suspended('"+suspended+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[suspended('"+suspended+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		
 		boolean ended = ((ExecutionEntity) execution).isEnded();
-		if(_DEBUG){msg = "----[ended('"+ended+"')]----";LOG.info(String.format(fmt, _f,msg));}
+		if(!Util._IN_PRODUCTION){msg = "----[ended('"+ended+"')]----";LOG.info(String.format(fmt, _f,msg));}
 
 		
 		Process<?> process = new Process<>(Util.NEW_ID,executionId, processInstanceId, businessKey, processName, definitionId,tenantId, caseInstanceId,ended,suspended,Process.ProcessType.customer_process);
 		
+		process.setBusinessId(objectBusinessId);
 		ProcessRest.instance().save(process, !Util._IN_PRODUCTION);
 		//TODO: this is ugly ... plan is to use objctType to have a single RegisterProcessDelegate 
 		((HasProcessReference)Class.forName(objectType+"Rest").getDeclaredMethod("instance").invoke(null)).addProcessReference(objectBusinessId, processInstanceId, businessKey, !Util._IN_PRODUCTION);
 		
-		//TODO: customer stuff		CustomerRest.instance().addProcessReference(objectBusinessId, processInstanceId, businessKey, !Util._IN_PRODUCTION);
+		//TODO: customer stuff		
+//		CustomerRest.instance().addProcessReference(objectBusinessId, processInstanceId, businessKey, !Util._IN_PRODUCTION);
 		
-		if(_DEBUG) {
+		if(!Util._IN_PRODUCTION) {
 			String time = "[ExecutionTime:"+(System.currentTimeMillis()-startTime)+")]====";
 			msg = "====[execute completed.]====";LOG.info(String.format(fmt,("<<<<<<<<<"+_f).toUpperCase(),msg+time));
 		}

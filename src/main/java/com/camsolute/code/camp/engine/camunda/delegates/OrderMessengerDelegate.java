@@ -114,16 +114,17 @@ public class OrderMessengerDelegate implements JavaDelegate {
 			objectStatus = targetStatus;
 			execution.setVariable("objectStatus",targetStatus);
 		}
-		MessageCorrelationResult result = execution.getProcessEngineServices().getRuntimeService().createMessageCorrelation(messageName)
+//		MessageCorrelationResult result = 
+				execution.getProcessEngineServices().getRuntimeService().createMessageCorrelation(messageName)
 		    .processInstanceVariableEquals("objectBusinessId", objectBusinessId)
-		    .processInstanceVariableEquals("objectId", objectId)
+//		    .processInstanceVariableEquals("objectId", objectId)
 			.setVariable("objectBusinessKey", objectBusinessKey)
 			.setVariable("objectBusinessId", objectBusinessId)
 			.setVariable("objectId",objectId)
 			.setVariable("objectStatus", objectStatus)
 			.setVariable("objectType",objectType)
 			.setVariable("objectPrincipal", objectPrincipal)
-//			.processInstanceBusinessKey(businessKey) //TODO:7 objectBusinessKey
+			.processInstanceBusinessKey(businessKey) //TODO:7 objectBusinessKey
 			.correlateWithResult();
 //			.correlateWithResult();
 //		switch(result.getResultType()) {

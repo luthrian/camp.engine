@@ -26,6 +26,9 @@ import org.camunda.bpm.engine.delegate.Expression;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.engine.impl.persistence.entity.ExecutionEntity;
 
+import com.camsolute.code.camp.lib.dao.HasProcessReference;
+import com.camsolute.code.camp.lib.utilities.Util;
+
 
 public class UnregisterCustomerProcessDelegate implements JavaDelegate {
 	public static final String _F = "["+UnregisterCustomerProcessDelegate.class.getSimpleName()+"]";
@@ -43,11 +46,11 @@ public class UnregisterCustomerProcessDelegate implements JavaDelegate {
 		String msg = null;
 		if(_DEBUG) {
 			_f = "[execute]";
-			msg = "====[ camunda pe: unregistering customer order process. ]====";LOG.info(String.format(fmt,(_f+">>>>>>>>>").toUpperCase(),msg));
+			msg = "====[ unregistering customer order process: ]====";LOG.info(String.format(fmt,(_f+">>>>>>>>>").toUpperCase(),msg));
 		}
 		
 		String objectBusinessId = (String) execution.getVariable("objectBusinessId");
-		String objectId = String.valueOf((Integer) execution.getVariable("objectId"));
+		String objectId = (String) execution.getVariable("objectId");
 		String objectStatus = (String) execution.getVariable("objectStatus");
 		String objectType = (String) execution.getVariable("objectType");
 		String objectPrincipal = (String) execution.getVariable("objectPrincipal");
@@ -76,9 +79,8 @@ public class UnregisterCustomerProcessDelegate implements JavaDelegate {
 		if(_DEBUG){msg = "----[suspended('"+suspended+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		if(_DEBUG){msg = "----[ended('"+ended+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		
-		
-//	Process<Order,OrderProcess> process = new Process<Order,OrderProcess>(executionId, processInstanceId, businessKey, processName, definitionId,tenantId, caseInstanceId,ended,suspended,Process.ProcessType.product_process);
-		
+		((HasProcessReference)Class.forName(objectType+"Rest").getDeclaredMethod("instance").invoke(null)).delProcessReference(objectBusinessId, processInstanceId, businessKey, !Util._IN_PRODUCTION);
+	
 		//TODO: Customer stuff
 		if(_DEBUG) {
 			String time = "[ExecutionTime:"+(System.currentTimeMillis()-startTime)+")]====";
