@@ -43,17 +43,8 @@ public class OrderMessengerDelegate implements JavaDelegate {
 	
 	
 	private Expression messageName;
-	private Expression businessKey;
 	private Expression processName;
 	private Expression targetStatus = null;
-
-	public Expression getBusinessKey() {
-		return businessKey;
-	}
-
-	public void setBusinessKey(Expression businessKey) {
-		this.businessKey = businessKey;
-	}
 
 	public Expression getMessage() {
 		return messageName;

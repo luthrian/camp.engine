@@ -25,9 +25,6 @@
         <camunda:field name="messageName">
           <camunda:string>opm_order_submitted</camunda:string>
         </camunda:field>
-        <camunda:field name="businessKey">
-          <camunda:expression>${businessKey}</camunda:expression>
-        </camunda:field>
         <camunda:field name="processName">
           <camunda:string>customer_order_process</camunda:string>
         </camunda:field>
@@ -56,9 +53,6 @@
       <bpmn2:extensionElements>
         <camunda:field name="messageName">
           <camunda:string>opm_order_updated</camunda:string>
-        </camunda:field>
-        <camunda:field name="businessKey">
-          <camunda:expression>${businessKey}</camunda:expression>
         </camunda:field>
         <camunda:field name="processName">
           <camunda:string>customer_order_process</camunda:string>
@@ -92,9 +86,6 @@
       <bpmn2:extensionElements>
         <camunda:field name="messageName">
           <camunda:string>opm_order_cancelled</camunda:string>
-        </camunda:field>
-        <camunda:field name="businessKey">
-          <camunda:expression>${businessKey}</camunda:expression>
         </camunda:field>
         <camunda:field name="processName">
           <camunda:string>customer_order_process</camunda:string>
@@ -263,9 +254,6 @@
         <camunda:field name="messageName">
           <camunda:string>prpm_order_shipped</camunda:string>
         </camunda:field>
-        <camunda:field name="businessKey">
-          <camunda:expression>${businessKey}</camunda:expression>
-        </camunda:field>
         <camunda:field name="processName">
           <camunda:string>production_process</camunda:string>
         </camunda:field>
@@ -359,9 +347,6 @@
         <camunda:field name="messageName">
           <camunda:string>mgtpm_order_released</camunda:string>
         </camunda:field>
-        <camunda:field name="businessKey">
-          <camunda:expression>${businessKey}</camunda:expression>
-        </camunda:field>
         <camunda:field name="processName">
           <camunda:string>customer_order_management_process</camunda:string>
         </camunda:field>
@@ -373,9 +358,6 @@
       <bpmn2:extensionElements>
         <camunda:field name="messageName">
           <camunda:string>mgtpm_order_rejected</camunda:string>
-        </camunda:field>
-        <camunda:field name="businessKey">
-          <camunda:expression>${businessKey}</camunda:expression>
         </camunda:field>
         <camunda:field name="processName">
           <camunda:string>customer_order_management_process</camunda:string>
@@ -554,7 +536,7 @@
         <di:waypoint xsi:type="dc:Point" x="727" y="832" />
         <di:waypoint xsi:type="dc:Point" x="727" y="613" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="638" y="766.8108108108108" width="81" height="12" />
+          <dc:Bounds x="638" y="767" width="81" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_11" bpmnElement="SequenceFlow_11" sourceElement="_BPMNShape_ServiceTask_2" targetElement="_BPMNShape_SendTask_2">
@@ -779,7 +761,7 @@
         <di:waypoint xsi:type="dc:Point" x="1110" y="498" />
         <di:waypoint xsi:type="dc:Point" x="1052" y="498" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1080" y="610.5" width="90" height="6" />
+          <dc:Bounds x="1080" y="611" width="90" height="6" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_BoundaryEvent_9" bpmnElement="BoundaryEvent_8">
@@ -932,11 +914,11 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1qjx93b_di" bpmnElement="SequenceFlow_1qjx93b">
         <di:waypoint xsi:type="dc:Point" x="1234" y="1004" />
-        <di:waypoint xsi:type="dc:Point" x="1436" y="1004" />
-        <di:waypoint xsi:type="dc:Point" x="1436" y="872" />
+        <di:waypoint xsi:type="dc:Point" x="1343" y="1004" />
+        <di:waypoint xsi:type="dc:Point" x="1343" y="872" />
         <di:waypoint xsi:type="dc:Point" x="1482" y="872" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1451" y="932" width="0" height="12" />
+          <dc:Bounds x="1358" y="932" width="0" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ServiceTask_08mgs4r_di" bpmnElement="ServiceTask_UpdateOrder_0zqht7u">
