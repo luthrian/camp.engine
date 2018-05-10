@@ -23,6 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.camsolute.code.camp.lib.models.product.ProductDao;
+import com.camsolute.code.camp.lib.utilities.LogEntryInterface.LogObjects;
 import com.camsolute.code.camp.lib.utilities.LoggerDao;
 import com.camsolute.code.camp.lib.utilities.Util;
 
@@ -42,6 +43,7 @@ public class ProductLoggerDelegate extends LoggerDelegate {
 		}
 		LoggerDao.instance().log(
 				ProductDao.instance().loadByBusinessId(objectBusinessId, log)
+				,LogObjects.Product
 				,log);
 		if(log) {
 			String time = "[ExecutionTime:"+(System.currentTimeMillis()-startTime)+")]====";
