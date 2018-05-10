@@ -27,7 +27,7 @@ import org.camunda.bpm.engine.impl.persistence.entity.ExecutionEntity;
 
 import com.camsolute.code.camp.lib.utilities.Util;
 
-public class LoggerDelegate implements JavaDelegate {
+public abstract class LoggerDelegate implements JavaDelegate {
 	private static final Logger LOG = LogManager.getLogger(LoggerDelegate.class);
 	private static String fmt = "[%15s] [%s]";
 	public static final String _F = "["+LoggerDelegate.class.getSimpleName()+"]";
@@ -72,7 +72,8 @@ public class LoggerDelegate implements JavaDelegate {
 		if(!Util._IN_PRODUCTION){msg = "----[definitionId('"+definitionId+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		if(!Util._IN_PRODUCTION){msg = "----[suspended('"+suspended+"')]----";LOG.info(String.format(fmt, _f,msg));}
 		if(!Util._IN_PRODUCTION){msg = "----[ended('"+ended+"')]----";LOG.info(String.format(fmt, _f,msg));}
-		
+
+		logObject(objectBusinessId);
 		
 		if(log && !Util._IN_PRODUCTION) {
 			String time = "[ExecutionTime:"+(System.currentTimeMillis()-startTime)+")]====";
@@ -81,4 +82,6 @@ public class LoggerDelegate implements JavaDelegate {
 		
 	}
 
+	public abstract void logObject(String objectBusinessId);
+	
 }

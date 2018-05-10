@@ -80,7 +80,7 @@
       <bpmn2:outgoing>SequenceFlow_46</bpmn2:outgoing>
     </bpmn2:serviceTask>
     <bpmn2:endEvent id="EndEvent_1">
-      <bpmn2:incoming>SequenceFlow_03x20st</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_0r0b2lk</bpmn2:incoming>
     </bpmn2:endEvent>
     <bpmn2:sendTask id="SendTask_SendOrderCancelledMessage" name="Order Cancelled" camunda:class="com.camsolute.code.camp.engine.camunda.delegates.OrderMessengerDelegate">
       <bpmn2:extensionElements>
@@ -129,7 +129,7 @@
       <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression"><![CDATA[${objectStatus == "CANCELLED"}]]></bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:sequenceFlow id="SequenceFlow_31" name="" sourceRef="SendTask_SendOrderCancelledMessage" targetRef="ServiceTask_UnregisterCustomerOrderProcess2" />
-    <bpmn2:sequenceFlow id="SequenceFlow_03x20st" sourceRef="ServiceTask_UnregisterCustomerOrderProcess2" targetRef="EndEvent_1" />
+    <bpmn2:sequenceFlow id="SequenceFlow_03x20st" sourceRef="ServiceTask_UnregisterCustomerOrderProcess2" targetRef="ServiceTask_LogOrder1" />
     <bpmn2:sequenceFlow id="SequenceFlow_8" sourceRef="UserTask_ConfirmFulfillment" targetRef="ServiceTask_UpdateOrder_0zqht7u" />
     <bpmn2:sequenceFlow id="SequenceFlow_7" name="" sourceRef="BoundaryEvent_7" targetRef="UserTask_ConfirmFulfillment" />
     <bpmn2:userTask id="submit_order" name="Submit Order" camunda:assignee="chris">
@@ -206,6 +206,11 @@
       <bpmn2:incoming>SequenceFlow_1qjx93b</bpmn2:incoming>
       <bpmn2:incoming>SequenceFlow_31</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_03x20st</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_0r0b2lk" sourceRef="ServiceTask_LogOrder1" targetRef="EndEvent_1" />
+    <bpmn2:serviceTask id="ServiceTask_LogOrder1" name="Log Order" camunda:class="com.camsolute.code.camp.engine.camunda.delegates.OrderLoggerDelegate">
+      <bpmn2:incoming>SequenceFlow_03x20st</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_0r0b2lk</bpmn2:outgoing>
     </bpmn2:serviceTask>
   </bpmn2:process>
   <bpmn2:process id="process.name.Production" name="production_process" isExecutable="true">
@@ -680,9 +685,9 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_31" bpmnElement="SequenceFlow_31" sourceElement="_BPMNShape_SendTask_6" targetElement="Task_1h896hv_di">
         <di:waypoint xsi:type="dc:Point" x="1278" y="872" />
-        <di:waypoint xsi:type="dc:Point" x="1482" y="872" />
+        <di:waypoint xsi:type="dc:Point" x="1319" y="872" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1335" y="854" width="90" height="6" />
+          <dc:Bounds x="1253.5" y="854" width="90" height="6" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_7" bpmnElement="SequenceFlow_7" sourceElement="_BPMNShape_BoundaryEvent_8" targetElement="_BPMNShape_UserTask_4">
@@ -868,13 +873,13 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Task_1h896hv_di" bpmnElement="ServiceTask_UnregisterCustomerOrderProcess2">
-        <dc:Bounds x="1482" y="832" width="100" height="80" />
+        <dc:Bounds x="1319" y="832" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_03x20st_di" bpmnElement="SequenceFlow_03x20st">
-        <di:waypoint xsi:type="dc:Point" x="1582" y="872" />
-        <di:waypoint xsi:type="dc:Point" x="1607" y="872" />
+        <di:waypoint xsi:type="dc:Point" x="1419" y="872" />
+        <di:waypoint xsi:type="dc:Point" x="1458" y="872" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1549.5" y="851" width="90" height="12" />
+          <dc:Bounds x="1393.5" y="851" width="90" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Task_0btdoxz_di" bpmnElement="ServiceTask_UnregisterProductionProcess1">
@@ -920,11 +925,10 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1qjx93b_di" bpmnElement="SequenceFlow_1qjx93b">
         <di:waypoint xsi:type="dc:Point" x="1234" y="1004" />
-        <di:waypoint xsi:type="dc:Point" x="1343" y="1004" />
-        <di:waypoint xsi:type="dc:Point" x="1343" y="872" />
-        <di:waypoint xsi:type="dc:Point" x="1482" y="872" />
+        <di:waypoint xsi:type="dc:Point" x="1369" y="1004" />
+        <di:waypoint xsi:type="dc:Point" x="1369" y="912" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1358" y="932" width="0" height="12" />
+          <dc:Bounds x="1256.5" y="983" width="90" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ServiceTask_08mgs4r_di" bpmnElement="ServiceTask_UpdateOrder_0zqht7u">
@@ -946,6 +950,16 @@
           <dc:Bounds x="472.5" y="576" width="0" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0r0b2lk_di" bpmnElement="SequenceFlow_0r0b2lk">
+        <di:waypoint xsi:type="dc:Point" x="1558" y="872" />
+        <di:waypoint xsi:type="dc:Point" x="1607" y="872" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1582.5" y="851" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0ndxovn_di" bpmnElement="ServiceTask_LogOrder1">
+        <dc:Bounds x="1458" y="832" width="100" height="80" />
+      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn2:definitions>
