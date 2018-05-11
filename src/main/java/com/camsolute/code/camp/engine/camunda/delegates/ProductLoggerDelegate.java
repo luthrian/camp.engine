@@ -22,6 +22,7 @@ package com.camsolute.code.camp.engine.camunda.delegates;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.camsolute.code.camp.lib.models.product.Product;
 import com.camsolute.code.camp.lib.models.product.ProductDao;
 import com.camsolute.code.camp.lib.utilities.LogEntryInterface.LogObjects;
 import com.camsolute.code.camp.lib.utilities.LoggerDao;
@@ -41,10 +42,9 @@ public class ProductLoggerDelegate extends LoggerDelegate {
 			_f = "[_log]";
 			msg = "====[ Logging order object('"+objectBusinessId+"') ... ]====";LOG.traceEntry(String.format(fmt,_f,msg));
 		}
-		LoggerDao.instance().log(
-				ProductDao.instance().loadByBusinessId(objectBusinessId, log)
-				,LogObjects.Product
-				,log);
+		
+		Product p = ProductDao.instance().loadByBusinessId(objectBusinessId, log);
+		LoggerDao.instance().log(p,LogObjects.Product,log);
 		if(log) {
 			String time = "[ExecutionTime:"+(System.currentTimeMillis()-startTime)+")]====";
 			msg = "====[_logObject completed.]====";LOG.info(String.format(fmt,("<<<<<<<<<"+_f).toUpperCase(),msg+time));

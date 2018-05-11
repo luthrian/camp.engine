@@ -22,6 +22,7 @@ package com.camsolute.code.camp.engine.camunda.delegates;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.camsolute.code.camp.lib.models.order.Order;
 import com.camsolute.code.camp.lib.models.order.OrderDao;
 import com.camsolute.code.camp.lib.utilities.LogEntryInterface.LogObjects;
 import com.camsolute.code.camp.lib.utilities.LoggerDao;
@@ -41,10 +42,8 @@ public class OrderLoggerDelegate extends LoggerDelegate {
 			_f = "[_log]";
 			msg = "====[ Logging order object('"+objectBusinessId+"') ... ]====";LOG.traceEntry(String.format(fmt,_f,msg));
 		}
-		LoggerDao.instance().log(
-				OrderDao.instance().loadByBusinessId(objectBusinessId, log)
-				,LogObjects.Order
-				,log);
+		Order o = OrderDao.instance().loadByBusinessId(objectBusinessId, log);
+		LoggerDao.instance().log(o,LogObjects.Order,log);
 		if(log) {
 			String time = "[ExecutionTime:"+(System.currentTimeMillis()-startTime)+")]====";
 			msg = "====[_logObject completed.]====";LOG.info(String.format(fmt,("<<<<<<<<<"+_f).toUpperCase(),msg+time));

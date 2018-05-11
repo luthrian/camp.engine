@@ -35,7 +35,7 @@ public class UnregisterCustomerProcessDelegate implements JavaDelegate {
 	public static final boolean _DEBUG = true;
 	private static String fmt = "[%15s] [%s]";
 	public static final boolean _IN_PRODUCTION = false;
-    private static final Logger LOG = LogManager.getLogger("RegisterCustomerProcessDelegate");
+    private static final Logger LOG = LogManager.getLogger("UnregisterCustomerProcessDelegate");
 	
     private Expression processName;
 
